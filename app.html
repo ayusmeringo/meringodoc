@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MeringoDocs — Write Your Document</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: #FAFAF8; color: #1A1A1A; overflow-x: hidden; }
+
+:root {
+  --gold: #C8983A;
+  --gold-light: #E8C06A;
+  --gold-dim: rgba(200,152,58,0.1);
+  --gold-border: rgba(200,152,58,0.25);
+  --black: #0A0A0A;
+  --ink: #1A1A1A;
+  --muted: #888880;
+  --border: rgba(0,0,0,0.08);
+  --surface: #F4F2EC;
+  --white: #ffffff;
+  --green: #1a7a4a;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-mark {
+  width: 32px; height: 32px; border-radius: 7px;
+  background: var(--black); display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-mark span { color: var(--gold); font-size: 16px; font-weight: 700; font-family: 'Cormorant Garamond', serif; }
+.nav-name { font-size: 15px; font-weight: 500; color: var(--ink); }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.usage-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 100px; padding: 6px 14px;
+}
+.usage-text { font-size: 12px; color: var(--muted); }
+.usage-count { font-size: 12px; font-weight: 500; color: var(--ink); }
+.upgrade-btn {
+  background: var(--gold); color: var(--black); border: none;
+  border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 500;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.upgrade-btn:hover { background: var(--gold-light); }
+
+/* MAIN LAYOUT */
+.app-layout {
+  display: grid; grid-template-columns: 340px 1fr;
+  min-height: calc(100vh - 60px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--white); border-right: 1px solid var(--border);
+  padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;
+  overflow-y: auto;
+}
+.sidebar-section h3 { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.75rem; }
+
+label.field-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 400; }
+select, input[type="text"], textarea {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  background: var(--white); color: var(--ink); outline: none;
+  transition: border-color 0.2s;
+}
+select:focus, input:focus, textarea:focus { border-color: var(--gold-border); box-shadow: 0 0 0 3px var(--gold-dim); }
+textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+.divider { height: 1px; background: var(--border); }
+
+.generate-btn {
+  width: 100%; padding: 13px; background: var(--black); color: var(--white);
+  border: none; border-radius: 10px; font-size: 14px; font-weight: 500;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.generate-btn:hover { background: #2a2a2a; }
+.generate-btn:disabled { background: #ccc; cursor: not-allowed; color: #888; }
+
+.tabs { display: flex; gap: 4px; background: var(--surface); border-radius: 8px; padding: 3px; }
+.tab-btn {
+  flex: 1; padding: 7px 4px; font-size: 11px; border: none; background: transparent;
+  border-radius: 6px; cursor: pointer; color: var(--muted); transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif; font-weight: 400; text-align: center;
+}
+.tab-btn.active { background: var(--white); color: var(--ink); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; gap: 1rem; }
+
+/* OUTPUT AREA */
+.output-area {
+  display: flex; flex-direction: column;
+  background: var(--surface);
+}
+.output-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem; background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.output-title { font-size: 13px; font-weight: 500; color: var(--ink); }
+.output-actions { display: flex; gap: 8px; }
+.action-btn {
+  font-size: 12px; padding: 6px 14px; border: 1px solid var(--border);
+  border-radius: 7px; background: var(--white); color: var(--muted);
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.action-btn:hover { color: var(--ink); border-color: rgba(0,0,0,0.2); }
+.action-btn.gold { background: var(--gold); color: var(--black); border-color: var(--gold); font-weight: 500; }
+.action-btn.gold:hover { background: var(--gold-light); }
+
+.output-body {
+  flex: 1; padding: 2rem 2.5rem; overflow-y: auto;
+  font-size: 14px; line-height: 1.9; color: var(--ink);
+  white-space: pre-wrap; font-family: 'Times New Roman', serif;
+  max-height: calc(100vh - 120px);
+}
+.output-placeholder {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; text-align: center; padding: 3rem;
+  color: var(--muted);
+}
+.placeholder-icon { font-size: 48px; margin-bottom: 1rem; opacity: 0.4; }
+.placeholder-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--ink); margin-bottom: 0.5rem; font-weight: 600; }
+.placeholder-sub { font-size: 13px; line-height: 1.7; max-width: 320px; }
+
+.format-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gold-dim); border: 1px solid var(--gold-border);
+  border-radius: 6px; padding: 5px 10px; margin-bottom: 1rem;
+  font-size: 11px; color: #8a6520; font-family: 'DM Sans', sans-serif;
+}
+
+/* LOADER */
+.loader { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* PAYWALL OVERLAY */
+.paywall-overlay {
+  position: fixed; inset: 0; background: rgba(250,250,248,0.95);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  backdrop-filter: blur(8px);
+}
+.paywall-overlay.open { opacity: 1; pointer-events: all; }
+.paywall-box {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 24px; padding: 3rem; max-width: 480px; width: 90%;
+  text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  transform: translateY(20px); transition: transform 0.3s;
+}
+.paywall-overlay.open .paywall-box { transform: translateY(0); }
+.paywall-icon { font-size: 48px; margin-bottom: 1.25rem; }
+.paywall-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--ink); margin-bottom: 0.5rem; font-weight: 700; }
+.paywall-box p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; font-weight: 300; }
+.paywall-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.paywall-plan {
+  border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem;
+  cursor: pointer; transition: all 0.2s; text-align: left;
+}
+.paywall-plan:hover { border-color: var(--gold-border); background: var(--gold-dim); }
+.paywall-plan.selected { border-color: var(--gold); background: var(--gold-dim); }
+.plan-name { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.plan-price { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--ink); font-weight: 600; line-height: 1; }
+.plan-period { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.plan-save { font-size: 10px; color: var(--green); font-weight: 500; margin-top: 4px; }
+.paywall-btn {
+  width: 100%; padding: 14px; background: var(--black); color: var(--white);
+  border: none; border-radius: 10px; font-size: 14px; font-weight: 500;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; margin-bottom: 0.75rem;
+}
+.paywall-btn:hover { background: #2a2a2a; }
+.paywall-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.paywall-skip { font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; }
+.paywall-skip:hover { color: var(--ink); }
+
+/* PAYMENT FORM */
+.pay-form { display: none; text-align: left; }
+.pay-form.active { display: block; }
+.pay-form-field { margin-bottom: 0.75rem; }
+.pay-form-field label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+.pay-form-field input {
+  width: 100%; padding: 11px 13px; border: 1px solid var(--border);
+  border-radius: 9px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+  background: var(--surface); color: var(--ink); outline: none;
+}
+.pay-form-field input:focus { border-color: var(--gold-border); }
+.back-link { font-size: 12px; color: var(--muted); cursor: pointer; margin-bottom: 1rem; display: inline-block; }
+.back-link:hover { color: var(--ink); }
+.secure-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 0.5rem; }
+
+/* WORD COUNT */
+.word-count { font-size: 11px; color: var(--muted); margin-top: 4px; text-align: right; }
+
+/* HISTORY SIDEBAR */
+.history-list { display: flex; flex-direction: column; gap: 6px; }
+.history-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: all 0.2s;
+}
+.history-item:hover { border-color: var(--gold-border); background: var(--gold-dim); }
+.history-item-title { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-item-meta { font-size: 11px; color: var(--muted); }
+.history-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 1rem 0; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+  .output-body { max-height: 60vh; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark"><span>M</span></div>
+    <span class="nav-name">MeringoDocs</span>
+  </a>
+  <div class="nav-right">
+    <div class="usage-pill">
+      <span class="usage-text">Free generations left:</span>
+      <span class="usage-count" id="usageCount">5</span>
+    </div>
+    <button class="upgrade-btn" onclick="showPaywall()">Upgrade to Pro</button>
+  </div>
+</nav>
+
+<!-- APP LAYOUT -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('generate', this)">Generate</button>
+      <button class="tab-btn" onclick="switchTab('reformat', this)">Reformat</button>
+      <button class="tab-btn" onclick="switchTab('references', this)">References</button>
+      <button class="tab-btn" onclick="switchTab('history', this)">History</button>
+    </div>
+
+    <!-- GENERATE TAB -->
+    <div class="tab-panel active" id="tab-generate">
+      <div class="sidebar-section">
+        <h3>Document settings</h3>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div>
+            <label class="field-label">Document type</label>
+            <select id="docType">
+              <option value="seminar_paper">Seminar paper</option>
+              <option value="research_proposal">Research proposal</option>
+              <option value="dissertation_chapter">Dissertation chapter</option>
+              <option value="journal_article">Journal article</option>
+              <option value="abstract">Abstract only</option>
+              <option value="powerpoint">PowerPoint outline</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Institution type</label>
+            <select id="instType">
+              <option value="university">University</option>
+              <option value="polytechnic">Polytechnic</option>
+              <option value="college_of_education">College of Education</option>
+              <option value="monotechnic">Monotechnic</option>
+              <option value="school_of_nursing">School of Nursing</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Department / field</label>
+            <select id="field">
+              <option value="urban_planning">Urban & Regional Planning</option>
+              <option value="architecture">Architecture</option>
+              <option value="civil_engineering">Civil Engineering</option>
+              <option value="geography">Geography</option>
+              <option value="economics">Economics</option>
+              <option value="nursing">Nursing</option>
+              <option value="education">Education</option>
+              <option value="business_admin">Business Administration</option>
+              <option value="accounting">Accounting</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Approximate length</label>
+            <select id="wordCount">
+              <option value="500">500 words</option>
+              <option value="1000" selected>1,000 words</option>
+              <option value="2000">2,000 words</option>
+              <option value="3000">3,000 words</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="sidebar-section">
+        <h3>Your content</h3>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div>
+            <label class="field-label">Research topic or title</label>
+            <input type="text" id="topic" placeholder="e.g. Urban sprawl and food security in peri-urban Lagos" />
+          </div>
+          <div>
+            <label class="field-label">Your notes or rough draft (optional)</label>
+            <textarea id="notes" placeholder="Paste any bullet points, rough draft, or key ideas here..."></textarea>
+            <div class="word-count" id="noteCount">0 words</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="generate-btn" id="genBtn" onclick="generateDoc()">
+        <span id="genBtnText">Generate document</span>
+      </button>
+    </div>
+
+    <!-- REFORMAT TAB -->
+    <div class="tab-panel" id="tab-reformat">
+      <div class="sidebar-section">
+        <h3>Paste your document</h3>
+        <textarea id="reformatInput" style="min-height:160px;" placeholder="Paste your existing draft here. MeringoDocs will reformat it to proper APA 7th edition standards with correct academic tone and British English."></textarea>
+      </div>
+      <div>
+        <label class="field-label">Fix level</label>
+        <select id="fixLevel">
+          <option value="light">Light — structure and formatting only</option>
+          <option value="full">Full — rewrite, humanise, and format</option>
+        </select>
+      </div>
+      <button class="generate-btn" id="reformatBtn" onclick="reformatDoc()">
+        <span id="reformatBtnText">Reformat document</span>
+      </button>
+    </div>
+
+    <!-- REFERENCES TAB -->
+    <div class="tab-panel" id="tab-references">
+      <div class="sidebar-section">
+        <h3>Generate references</h3>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div>
+            <label class="field-label">Paste raw references to fix</label>
+            <textarea id="refInput" style="min-height:100px;" placeholder="Paste a messy reference list here and MeringoDocs will format it correctly in APA 7th edition."></textarea>
+          </div>
+          <div>
+            <label class="field-label">Or enter a topic to generate references</label>
+            <input type="text" id="refTopic" placeholder="e.g. housing estates and urban growth in Nigeria" />
+          </div>
+        </div>
+      </div>
+      <button class="generate-btn" id="refBtn" onclick="generateRefs()">
+        <span id="refBtnText">Generate APA 7th references</span>
+      </button>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div class="tab-panel" id="tab-history">
+      <div class="sidebar-section">
+        <h3>Your documents</h3>
+        <div class="history-list" id="historyList">
+          <div class="history-empty">No documents yet. Generate your first document to see it here.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-area">
+    <div class="output-topbar">
+      <span class="output-title" id="outputTitle">Your document will appear here</span>
+      <div class="output-actions">
+        <button class="action-btn" onclick="copyOutput()" id="copyBtn" style="display:none;">Copy text</button>
+        <button class="action-btn gold" onclick="showPaywall()" id="downloadBtn" style="display:none;">Download Word (.docx) ↓</button>
+      </div>
+    </div>
+    <div class="output-body" id="outputBody">
+      <div class="output-placeholder">
+        <div class="placeholder-icon">✍️</div>
+        <div class="placeholder-title">Ready to write</div>
+        <p class="placeholder-sub">Choose your document type, enter your topic, and click Generate. Your properly formatted academic document will appear here.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PAYWALL -->
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-box">
+
+    <div id="paywallStep1">
+      <div class="paywall-icon">🎓</div>
+      <h2>You have used your 5 free generations</h2>
+      <p>Subscribe to MeringoDocs Pro and get unlimited documents, Word downloads, PowerPoint generation, and full document history — all for less than the cost of one photocopy session.</p>
+
+      <div class="paywall-plans">
+        <div class="paywall-plan selected" id="planPro" onclick="selectPlan('pro')">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">₦2,500</div>
+          <div class="plan-period">per month</div>
+        </div>
+        <div class="paywall-plan" id="planAnnual" onclick="selectPlan('annual')">
+          <div class="plan-name">Annual</div>
+          <div class="plan-price">₦20,000</div>
+          <div class="plan-period">per year</div>
+          <div class="plan-save">Save ₦10,000</div>
+        </div>
+      </div>
+
+      <button class="paywall-btn" onclick="showPayForm()">Continue to payment</button>
+      <div class="paywall-skip" onclick="closePaywall()">No thanks, I will use my free generations later</div>
+    </div>
+
+    <div id="paywallStep2" style="display:none; text-align:left;">
+      <span class="back-link" onclick="showPlanSelect()">← Back</span>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; margin-bottom:0.25rem;">Complete payment</h2>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:1.25rem;" id="payFormPlanLabel">Pro plan — ₦2,500/month</p>
+
+      <div class="pay-form-field">
+        <label>Full name</label>
+        <input type="text" id="pwName" placeholder="e.g. Adeyemi Oladele" />
+      </div>
+      <div class="pay-form-field">
+        <label>Email address</label>
+        <input type="email" id="pwEmail" placeholder="your@email.com" />
+      </div>
+
+      <button class="paywall-btn" id="pwPayBtn" onclick="processPayment()" style="margin-top:0.5rem;">Pay with Paystack</button>
+      <div class="secure-note">🔒 Secured by Paystack · Cards · Bank transfer · USSD</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+const MAX_FREE = 5;
+let usedGenerations = parseInt(localStorage.getItem('md_used') || '0');
+let selectedPlan = 'pro';
+let currentOutput = '';
+let docHistory = JSON.parse(localStorage.getItem('md_history') || '[]');
+
+const plans = {
+  pro: { label: 'Pro plan — ₦2,500/month', amount: 250000, display: '₦2,500' },
+  annual: { label: 'Annual plan — ₦20,000/year', amount: 2000000, display: '₦20,000' }
+};
+
+// ─── INIT ─────────────────────────────────────────────────
+function init() {
+  updateUsageDisplay();
+  renderHistory();
+}
+
+function updateUsageDisplay() {
+  const left = Math.max(0, MAX_FREE - usedGenerations);
+  document.getElementById('usageCount').textContent = left;
+  if (left === 0) {
+    document.getElementById('usageCount').style.color = '#c0392b';
+  }
+}
+
+function incrementUsage() {
+  usedGenerations++;
+  localStorage.setItem('md_used', usedGenerations);
+  updateUsageDisplay();
+}
+
+function checkLimit() {
+  if (usedGenerations >= MAX_FREE) {
+    showPaywall();
+    return false;
+  }
+  return true;
+}
+
+// ─── TABS ─────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── WORD COUNT ───────────────────────────────────────────
+document.getElementById('notes').addEventListener('input', function() {
+  const w = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+  document.getElementById('noteCount').textContent = w + ' words';
+});
+
+// ─── SYSTEM PROMPT ────────────────────────────────────────
+const SYSTEM = `You are an expert Nigerian academic writer. You write exactly like a highly experienced human researcher — never like an AI.
+
+STRICT FORMATTING RULES:
+- Standard: Times New Roman 12pt, justified, block paragraphs (no first-line indent)
+- Seminar papers and proposals: 1.5 line spacing
+- Dissertations: double line spacing
+- APA 7th edition citations and reference list with hanging indents
+- British English ONLY (organise, analyse, behaviour, recognise, etc.)
+- No em dashes anywhere in the document
+- No ellipses for effect
+
+WRITING TONE:
+- Analytical, flowing, naturally varied prose
+- Mix short punchy sentences with longer analytical ones
+- Use hedging language naturally where appropriate
+- No robotic transition phrases like "Furthermore, it is important to note that..."
+- No hollow openers like "This paper seeks to examine..."
+- No AI-detectable phrasing patterns
+- Confident, assertive scholarly voice that sounds alive
+
+Always begin output with this formatting note on its own line:
+[Times New Roman 12pt · APA 7th Edition · British English · Justified · Block paragraphs]
+
+Then write the complete document.`;
+
+// ─── GENERATE ─────────────────────────────────────────────
+async function generateDoc() {
+  if (!checkLimit()) return;
+  const topic = document.getElementById('topic').value.trim();
+  if (!topic) { alert('Please enter a research topic or title.'); return; }
+
+  const docType = document.getElementById('docType').value;
+  const instType = document.getElementById('instType').value;
+  const field = document.getElementById('field').value;
+  const wordCount = document.getElementById('wordCount').value;
+  const notes = document.getElementById('notes').value.trim();
+
+  const docLabels = { seminar_paper:'seminar paper', research_proposal:'research proposal', dissertation_chapter:'dissertation chapter', journal_article:'journal article', abstract:'abstract', powerpoint:'PowerPoint slide outline' };
+  const instLabels = { university:'university', polytechnic:'polytechnic', college_of_education:'College of Education', monotechnic:'monotechnic', school_of_nursing:'School of Nursing' };
+
+  const prompt = `Write a ${docLabels[docType]} for a ${instLabels[instType]} student studying ${field.replace(/_/g,' ')}.
+
+Topic: "${topic}"
+Target length: approximately ${wordCount} words
+${notes ? 'Student notes to incorporate:\n' + notes : 'Generate from the topic alone.'}
+
+Write the complete document with all standard sections. Include APA 7th edition in-text citations and a reference list. Use Nigerian urban contexts in examples and references where relevant.`;
+
+  await streamOutput(prompt, `${docLabels[docType]} — ${topic.slice(0,50)}`, 'genBtn', 'genBtnText');
+  incrementUsage();
+  saveToHistory(docLabels[docType], topic);
+}
+
+// ─── REFORMAT ─────────────────────────────────────────────
+async function reformatDoc() {
+  if (!checkLimit()) return;
+  const input = document.getElementById('reformatInput').value.trim();
+  if (!input) { alert('Please paste a document to reformat.'); return; }
+
+  const fixLevel = document.getElementById('fixLevel').value;
+  const prompt = fixLevel === 'full'
+    ? `Completely rewrite and humanise this document removing all AI-detectable phrasing while preserving the student's ideas. Make it read like an experienced researcher wrote it. Fix all formatting to APA 7th edition. British English throughout:\n\n${input}`
+    : `Reformat this document to proper academic structure, APA 7th edition referencing, and British English. Preserve original ideas but fix structure, formatting, and citations:\n\n${input}`;
+
+  await streamOutput(prompt, 'Reformatted document', 'reformatBtn', 'reformatBtnText');
+  incrementUsage();
+  saveToHistory('Reformatted document', 'Custom draft');
+}
+
+// ─── REFERENCES ───────────────────────────────────────────
+async function generateRefs() {
+  if (!checkLimit()) return;
+  const refInput = document.getElementById('refInput').value.trim();
+  const refTopic = document.getElementById('refTopic').value.trim();
+  if (!refInput && !refTopic) { alert('Please paste references or enter a topic.'); return; }
+
+  const prompt = refInput
+    ? `Convert these raw references into a properly formatted APA 7th edition reference list. Sort alphabetically by surname. British English. Hanging indent format. Fix any incomplete details logically:\n\n${refInput}`
+    : `Generate 10 realistic APA 7th edition references for research on: "${refTopic}". Include journal articles, books, and book chapters. Relevant to Nigerian urban contexts where applicable. Format as a proper APA 7th reference list with hanging indents.`;
+
+  await streamOutput(prompt, 'APA 7th Edition References', 'refBtn', 'refBtnText');
+  incrementUsage();
+  saveToHistory('Reference list', refTopic || 'Custom references');
+}
+
+// ─── STREAM OUTPUT ────────────────────────────────────────
+async function streamOutput(prompt, title, btnId, btnTextId) {
+  const outputBody = document.getElementById('outputBody');
+  const outputTitle = document.getElementById('outputTitle');
+  const btn = document.getElementById(btnId);
+  const btnText = document.getElementById(btnTextId);
+
+  outputTitle.textContent = title;
+  outputBody.innerHTML = '';
+  currentOutput = '';
+
+  document.getElementById('copyBtn').style.display = 'none';
+  document.getElementById('downloadBtn').style.display = 'none';
+
+  btn.disabled = true;
+  btnText.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;"></span>Generating...</span>';
+
+  const formatBadge = document.createElement('div');
+  formatBadge.className = 'format-badge';
+  formatBadge.textContent = 'Times New Roman 12pt · APA 7th · British English · Justified';
+  outputBody.appendChild(formatBadge);
+
+  const textNode = document.createElement('div');
+  outputBody.appendChild(textNode);
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        stream: true,
+        system: SYSTEM,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') continue;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+              currentOutput += parsed.delta.text;
+              textNode.textContent = currentOutput;
+              outputBody.scrollTop = outputBody.scrollHeight;
+            }
+          } catch {}
+        }
+      }
+    }
+
+    document.getElementById('copyBtn').style.display = 'inline-block';
+    document.getElementById('downloadBtn').style.display = 'inline-block';
+
+  } catch (err) {
+    textNode.textContent = 'Something went wrong. Please try again.\n\nError: ' + err.message;
+  }
+
+  btn.disabled = false;
+  btnText.textContent = btn.id === 'genBtn' ? 'Generate document' : btn.id === 'reformatBtn' ? 'Reformat document' : 'Generate APA 7th references';
+}
+
+// ─── COPY ─────────────────────────────────────────────────
+function copyOutput() {
+  navigator.clipboard.writeText(currentOutput).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy text', 2000);
+  });
+}
+
+// ─── HISTORY ──────────────────────────────────────────────
+function saveToHistory(type, topic) {
+  const item = { type, topic: topic.slice(0, 60), date: new Date().toLocaleDateString('en-GB'), content: currentOutput };
+  docHistory.unshift(item);
+  if (docHistory.length > 20) docHistory = docHistory.slice(0, 20);
+  localStorage.setItem('md_history', JSON.stringify(docHistory));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!docHistory.length) {
+    list.innerHTML = '<div class="history-empty">No documents yet. Generate your first document to see it here.</div>';
+    return;
+  }
+  list.innerHTML = docHistory.map((item, i) => `
+    <div class="history-item" onclick="loadHistory(${i})">
+      <div class="history-item-title">${item.topic}</div>
+      <div class="history-item-meta">${item.type} · ${item.date}</div>
+    </div>
+  `).join('');
+}
+
+function loadHistory(index) {
+  const item = docHistory[index];
+  currentOutput = item.content;
+  document.getElementById('outputTitle').textContent = item.topic;
+  const outputBody = document.getElementById('outputBody');
+  outputBody.innerHTML = '';
+  const badge = document.createElement('div');
+  badge.className = 'format-badge';
+  badge.textContent = 'Times New Roman 12pt · APA 7th · British English · Justified';
+  outputBody.appendChild(badge);
+  const text = document.createElement('div');
+  text.textContent = item.content;
+  outputBody.appendChild(text);
+  document.getElementById('copyBtn').style.display = 'inline-block';
+  document.getElementById('downloadBtn').style.display = 'inline-block';
+}
+
+// ─── PAYWALL ──────────────────────────────────────────────
+function showPaywall() {
+  document.getElementById('paywallOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  showPlanSelect();
+}
+
+function closePaywall() {
+  document.getElementById('paywallOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('planPro').classList.toggle('selected', plan === 'pro');
+  document.getElementById('planAnnual').classList.toggle('selected', plan === 'annual');
+}
+
+function showPayForm() {
+  document.getElementById('paywallStep1').style.display = 'none';
+  document.getElementById('paywallStep2').style.display = 'block';
+  document.getElementById('payFormPlanLabel').textContent = plans[selectedPlan].label;
+}
+
+function showPlanSelect() {
+  document.getElementById('paywallStep1').style.display = 'block';
+  document.getElementById('paywallStep2').style.display = 'none';
+}
+
+function processPayment() {
+  const name = document.getElementById('pwName').value.trim();
+  const email = document.getElementById('pwEmail').value.trim();
+  if (!name) { alert('Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+
+  const plan = plans[selectedPlan];
+  const btn = document.getElementById('pwPayBtn');
+  btn.textContent = 'Opening Paystack...';
+  btn.disabled = true;
+
+  const handler = PaystackPop.setup({
+    key: 'pk_live_4b52ba8f4673fb16e134f391489db5659b6ad8f5',
+    email: email,
+    amount: plan.amount,
+    currency: 'NGN',
+    ref: 'MD_' + Date.now(),
+    metadata: { name, plan: selectedPlan },
+    callback: function(response) {
+      closePaywall();
+      usedGenerations = 0;
+      localStorage.setItem('md_used', '0');
+      localStorage.setItem('md_subscribed', '1');
+      updateUsageDisplay();
+      document.getElementById('usageCount').textContent = 'Unlimited';
+      document.querySelector('.usage-text').textContent = 'Plan:';
+      document.getElementById('usageCount').textContent = 'Pro';
+      alert('Payment successful! Reference: ' + response.reference + '\n\nWelcome to MeringoDocs Pro. You now have unlimited access.');
+      btn.textContent = 'Pay with Paystack';
+      btn.disabled = false;
+    },
+    onClose: function() {
+      btn.textContent = 'Pay with Paystack';
+      btn.disabled = false;
+    }
+  });
+  handler.openIframe();
+}
+
+document.getElementById('paywallOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closePaywall();
+});
+
+init();
+</script>
+</body>
+</html>
