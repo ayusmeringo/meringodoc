@@ -415,14 +415,14 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
       <div class="paywall-plans">
         <div class="paywall-plan selected" id="planPro" onclick="selectPlan('pro')">
           <div class="plan-name">Pro</div>
-          <div class="plan-price">₦2,500</div>
+          <div class="plan-price">₦5,000</div>
           <div class="plan-period">per month</div>
         </div>
         <div class="paywall-plan" id="planAnnual" onclick="selectPlan('annual')">
           <div class="plan-name">Annual</div>
-          <div class="plan-price">₦20,000</div>
+          <div class="plan-price">₦40,000</div>
           <div class="plan-period">per year</div>
-          <div class="plan-save">Save ₦10,000</div>
+          <div class="plan-save">Save ₦20,000</div>
         </div>
       </div>
 
@@ -433,7 +433,7 @@ textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
     <div id="paywallStep2" style="display:none; text-align:left;">
       <span class="back-link" onclick="showPlanSelect()">← Back</span>
       <h2 style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; margin-bottom:0.25rem;">Complete payment</h2>
-      <p style="font-size:13px; color:var(--muted); margin-bottom:1.25rem;" id="payFormPlanLabel">Pro plan — ₦2,500/month</p>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:1.25rem;" id="payFormPlanLabel">Pro plan — ₦5,000/month</p>
 
       <div class="pay-form-field">
         <label>Full name</label>
@@ -460,8 +460,8 @@ let currentOutput = '';
 let docHistory = JSON.parse(localStorage.getItem('md_history') || '[]');
 
 const plans = {
-  pro: { label: 'Pro plan — ₦2,500/month', amount: 250000, display: '₦2,500' },
-  annual: { label: 'Annual plan — ₦20,000/year', amount: 2000000, display: '₦20,000' }
+  pro: { label: 'Pro plan — ₦5,000/month', amount: 500000, display: '₦5,000' },
+  annual: { label: 'Annual plan — ₦40,000/year', amount: 4000000, display: '₦40,000' }
 };
 
 // ─── INIT ─────────────────────────────────────────────────
