@@ -928,7 +928,7 @@ async function streamOutput(prompt, title, btnId, toneKey) {
   outputBody.appendChild(textNode);
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://meringodocs-api.oyinlanadj.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
