@@ -31,6 +31,8 @@ nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center
 .usage-count { font-size: 12px; font-weight: 500; color: var(--ink); }
 .upgrade-btn { background: var(--gold); color: var(--black); border: none; border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
 .upgrade-btn:hover { background: var(--gold-light); }
+.donate-nav-btn { background: transparent; color: #25D366; border: 1px solid rgba(37,211,102,0.3); border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
+.donate-nav-btn:hover { background: rgba(37,211,102,0.1); }
 
 /* ── LAYOUT ── */
 .app-layout { display: grid; grid-template-columns: 360px 1fr; min-height: calc(100vh - 60px); }
@@ -196,6 +198,45 @@ textarea { resize: vertical; line-height: 1.6; }
   .paywall-plans { grid-template-columns: 1fr; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── DONATION BANNER ── */
+.donation-banner { background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%); border-bottom: 2px solid rgba(200,152,58,0.3); }
+.donation-inner { display: flex; align-items: center; justify-content: space-between; padding: 10px 2rem; gap: 1rem; flex-wrap: wrap; }
+.donation-left { display: flex; align-items: center; gap: 12px; }
+.donation-icon { font-size: 20px; flex-shrink: 0; }
+.donation-title { font-size: 13px; font-weight: 500; color: #F0EDE6; line-height: 1.3; }
+.donation-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.donation-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+.donation-details-btn { font-size: 12px; padding: 7px 14px; border: 1px solid rgba(200,152,58,0.35); border-radius: 7px; background: transparent; color: #C8983A; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: all 0.2s; white-space: nowrap; }
+.donation-details-btn:hover { background: rgba(200,152,58,0.1); }
+.donation-wa-btn { font-size: 12px; padding: 7px 14px; border: none; border-radius: 7px; background: rgba(37,211,102,0.15); color: #25D366; font-family: 'DM Sans',sans-serif; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; transition: all 0.2s; }
+.donation-wa-btn:hover { background: rgba(37,211,102,0.25); }
+.donation-close-btn { font-size: 18px; color: #555; cursor: pointer; background: none; border: none; padding: 2px 8px; line-height: 1; flex-shrink: 0; }
+.donation-close-btn:hover { color: #999; }
+.donate-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(6px); }
+.donate-overlay.open { opacity: 1; pointer-events: all; }
+.donate-box { background: #1A1A1A; border: 1px solid rgba(200,152,58,0.25); border-radius: 24px; padding: 2rem; max-width: 440px; width: 90%; position: relative; transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
+.donate-overlay.open .donate-box { transform: translateY(0); }
+.donate-x { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; color: #888; }
+.donate-x:hover { color: #F0EDE6; }
+.donate-box h2 { font-family: 'Cormorant Garamond',serif; font-size: 1.7rem; color: #F0EDE6; margin-bottom: 0.4rem; font-weight: 700; }
+.donate-desc { font-size: 13px; color: #888; line-height: 1.75; margin-bottom: 1.25rem; font-weight: 300; }
+.donate-account { background: #0A0A0A; border: 1px solid rgba(200,152,58,0.2); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+.dar { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.dar:last-child { border-bottom: none; padding-bottom: 0; }
+.dal { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.05em; }
+.dav { font-size: 13px; color: #F0EDE6; font-weight: 500; }
+.dav.number { font-family: monospace; font-size: 16px; color: #C8983A; letter-spacing: 2px; }
+.dcopy { font-size: 11px; padding: 3px 10px; background: rgba(200,152,58,0.1); border: 1px solid rgba(200,152,58,0.2); border-radius: 5px; color: #C8983A; cursor: pointer; font-family: 'DM Sans',sans-serif; }
+.dcopy:hover { background: rgba(200,152,58,0.2); }
+.donate-amounts { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.damt { padding: 8px 16px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; background: rgba(255,255,255,0.03); color: #F0EDE6; font-size: 13px; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: all 0.2s; }
+.damt:hover { border-color: rgba(200,152,58,0.35); color: #C8983A; background: rgba(200,152,58,0.08); }
+.donate-wa-link { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.2); border-radius: 10px; color: #25D366; text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s; margin-bottom: 0.75rem; }
+.donate-wa-link:hover { background: rgba(37,211,102,0.22); }
+.donate-thank { font-size: 11px; color: #555; text-align: center; }
+@media (max-width: 768px) { .donation-inner { padding: 10px 1rem; } .donation-sub { display: none; } .donate-nav-btn { display: none; } }
+
 </style>
 </head>
 <body>
@@ -211,6 +252,7 @@ textarea { resize: vertical; line-height: 1.6; }
       <span class="usage-text">Free left:</span>
       <span class="usage-count" id="usageCount">5</span>
     </div>
+    <button class="donate-nav-btn" onclick="showDonateModal()">&#128591; Support us</button>
     <button class="upgrade-btn" onclick="showPaywall()">Upgrade &#8358;5,000</button>
   </div>
 </nav>
@@ -851,7 +893,8 @@ function selectCat(cat, btn) {
 }
 
 // ── WORD COUNT ─────────────────────────────────────────────
-document.getElementById('acNotes').addEventListener('input', function() {
+const acNotesEl = document.getElementById('acNotes');
+if (acNotesEl) acNotesEl.addEventListener('input', function() {
   const w = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
   document.getElementById('acNoteCount').textContent = w + ' words';
 });
@@ -1240,10 +1283,91 @@ function processPayment() {
   handler.openIframe();
 }
 
-document.getElementById('paywallOverlay').addEventListener('click', function(e) { if (e.target === this) closePaywall(); });
-document.getElementById('downloadSoonOverlay').addEventListener('click', function(e) { if (e.target === this) closeDownloadSoon(); });
+const pwEl = document.getElementById('paywallOverlay');
+if (pwEl) pwEl.addEventListener('click', function(e) { if (e.target === this) closePaywall(); });
+const dlEl = document.getElementById('downloadSoonOverlay');
+if (dlEl) dlEl.addEventListener('click', function(e) { if (e.target === this) closeDownloadSoon(); });
 
-init();
+document.addEventListener('DOMContentLoaded', function() { init(); });
+
+// ── DONATION ────────────────────────────────────────────────
+function closeDonationBanner() {
+  document.getElementById('donationBanner').style.display = 'none';
+  sessionStorage.setItem('md_banner_closed', '1');
+}
+
+function showDonateModal() {
+  document.getElementById('donateOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDonateModal() {
+  document.getElementById('donateOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copyAccNumber() {
+  navigator.clipboard.writeText('0141437939').then(() => {
+    const btns = document.querySelectorAll('.dcopy');
+    btns.forEach(b => b.textContent = 'Copied!');
+    setTimeout(() => btns.forEach(b => b.textContent = 'Copy'), 2500);
+  });
+}
+
+const doEl = document.getElementById('donateOverlay');
+if (doEl) doEl.addEventListener('click', function(e) {
+  if (e.target === this) closeDonateModal();
+});
+
+// Hide banner if already dismissed this session
+if (sessionStorage.getItem('md_banner_closed') === '1') {
+  const b = document.getElementById('donationBanner');
+  if (b) b.style.display = 'none';
+}
+
 </script>
+
+<!-- DONATE MODAL -->
+<div class="donate-overlay" id="donateOverlay">
+  <div class="donate-box">
+    <button class="donate-x" onclick="closeDonateModal()">✕</button>
+    <div class="donate-emoji">🙏</div>
+    <h2>Support MeringoDocs</h2>
+    <p class="donate-desc">I am a Nigerian lecturer who built this tool from scratch to help students write better. Your donation — any amount — goes directly towards funding the AI engine, adding Word downloads, PowerPoint generation, and WhatsApp ordering. Every contributor becomes part of this story.</p>
+
+    <div class="donate-account">
+      <div class="dar">
+        <span class="dal">Bank</span>
+        <span class="dav">Guaranty Trust Bank (GTB)</span>
+      </div>
+      <div class="dar">
+        <span class="dal">Account name</span>
+        <span class="dav">Oyinlana Ayodeji</span>
+      </div>
+      <div class="dar">
+        <span class="dal">Account number</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="dav number">0141437939</span>
+          <button class="dcopy" onclick="copyAccNumber()">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:12px;color:#888;margin-bottom:0.75rem;">Suggested amounts — or send any amount you can:</p>
+    <div class="donate-amounts">
+      <button class="damt" onclick="copyAccNumber()">₦500</button>
+      <button class="damt" onclick="copyAccNumber()">₦1,000</button>
+      <button class="damt" onclick="copyAccNumber()">₦2,000</button>
+      <button class="damt" onclick="copyAccNumber()">₦5,000</button>
+      <button class="damt" onclick="copyAccNumber()">₦10,000</button>
+    </div>
+
+    <a href="https://wa.me/2348134667120?text=Hi%20Meringo%2C%20I%20just%20made%20a%20donation%20to%20support%20MeringoDocs%20%F0%9F%99%8F" target="_blank" class="donate-wa-link">
+      💬 Tap here to notify me after donating
+    </a>
+    <div class="donate-thank">Thank you from the bottom of my heart. Every kobo counts. — Meringo</div>
+  </div>
+</div>
+
 </body>
 </html>
