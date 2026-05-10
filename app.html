@@ -1,1376 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MeringoDocs — Write Anything</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MeringoDocs</title>
+
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: 'DM Sans', sans-serif; background: #FAFAF8; color: #1A1A1A; overflow-x: hidden; }
-:root {
-  --gold: #C8983A; --gold-light: #E8C06A; --gold-dim: rgba(200,152,58,0.1);
-  --gold-border: rgba(200,152,58,0.25); --black: #0A0A0A; --ink: #1A1A1A;
-  --muted: #888880; --border: rgba(0,0,0,0.08); --surface: #F4F2EC;
-  --white: #ffffff; --green: #1a7a4a; --red: #c0392b;
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:0;
 }
 
-/* ── NAV ── */
-nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-.nav-logo-mark { width: 32px; height: 32px; border-radius: 7px; background: var(--black); display: flex; align-items: center; justify-content: center; }
-.nav-logo-mark span { color: var(--gold); font-size: 16px; font-weight: 700; font-family: 'Cormorant Garamond', serif; }
-.nav-name { font-size: 15px; font-weight: 500; color: var(--ink); }
-.nav-right { display: flex; align-items: center; gap: 0.75rem; }
-.usage-pill { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 6px 14px; }
-.usage-text { font-size: 12px; color: var(--muted); }
-.usage-count { font-size: 12px; font-weight: 500; color: var(--ink); }
-.upgrade-btn { background: var(--gold); color: var(--black); border: none; border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
-.upgrade-btn:hover { background: var(--gold-light); }
-.donate-nav-btn { background: transparent; color: #25D366; border: 1px solid rgba(37,211,102,0.3); border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
-.donate-nav-btn:hover { background: rgba(37,211,102,0.1); }
-
-/* ── LAYOUT ── */
-.app-layout { display: grid; grid-template-columns: 360px 1fr; min-height: calc(100vh - 60px); }
-
-/* ── SIDEBAR ── */
-.sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto; max-height: calc(100vh - 60px); position: relative; }
-.sidebar-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.5rem; }
-.sidebar-toggle { display: none; align-items: center; justify-content: space-between; width: 100%; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--ink); font-family: 'DM Sans', sans-serif; margin-bottom: 0.25rem; }
-.sidebar-toggle-icon { font-size: 16px; transition: transform 0.2s; }
-.sidebar-toggle.collapsed .sidebar-toggle-icon { transform: rotate(180deg); }
-.sidebar-content { display: flex; flex-direction: column; gap: 1rem; }
-.sidebar-content.hidden { display: none; }
-
-label.field-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
-select, input[type="text"], textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--ink); outline: none; transition: border-color 0.2s; }
-select:focus, input:focus, textarea:focus { border-color: var(--gold-border); box-shadow: 0 0 0 3px var(--gold-dim); }
-textarea { resize: vertical; line-height: 1.6; }
-.divider { height: 1px; background: var(--border); }
-
-/* ── CATEGORY GRID ── */
-.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.cat-btn { padding: 8px 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--ink); font-size: 11px; font-family: 'DM Sans', sans-serif; cursor: pointer; text-align: center; transition: all 0.15s; line-height: 1.4; }
-.cat-btn:hover { border-color: var(--gold-border); background: var(--gold-dim); }
-.cat-btn.active { border-color: var(--gold); background: var(--gold-dim); color: #8a6520; font-weight: 500; }
-.cat-icon { font-size: 16px; display: block; margin-bottom: 3px; }
-.task-panel { display: none; flex-direction: column; gap: 0.75rem; }
-.task-panel.active { display: flex; }
-
-/* ── BUTTONS ── */
-.generate-btn { width: 100%; padding: 12px; background: var(--black); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.generate-btn:hover { background: #2a2a2a; }
-.generate-btn:disabled { background: #ccc; cursor: not-allowed; color: #888; }
-
-/* ── TABS ── */
-.nav-tabs { display: flex; gap: 3px; background: var(--surface); border-radius: 8px; padding: 3px; }
-.nav-tab { flex: 1; padding: 6px 4px; font-size: 11px; border: none; background: transparent; border-radius: 6px; cursor: pointer; color: var(--muted); transition: all 0.15s; font-family: 'DM Sans', sans-serif; text-align: center; }
-.nav-tab.active { background: var(--white); color: var(--ink); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-.main-panel { display: none; flex-direction: column; gap: 1rem; }
-.main-panel.active { display: flex; }
-
-/* ── HISTORY ── */
-.history-list { display: flex; flex-direction: column; gap: 6px; }
-.history-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: all 0.2s; }
-.history-item:hover { border-color: var(--gold-border); }
-.history-item-title { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.history-item-meta { font-size: 11px; color: var(--muted); }
-.history-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 1.5rem 0; }
-
-/* ── OUTPUT ── */
-.output-area { display: flex; flex-direction: column; background: var(--surface); }
-.output-topbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: var(--white); border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 1rem; flex-wrap: wrap; }
-.output-title { font-size: 13px; font-weight: 500; color: var(--ink); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.output-actions { display: flex; gap: 8px; flex-shrink: 0; }
-.action-btn { font-size: 12px; padding: 6px 14px; border: 1px solid var(--border); border-radius: 7px; background: var(--white); color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap; }
-.action-btn:hover { color: var(--ink); border-color: rgba(0,0,0,0.2); }
-.action-btn.gold { background: var(--gold); color: var(--black); border-color: var(--gold); font-weight: 500; }
-.action-btn.gold:hover { background: var(--gold-light); }
-.output-body { flex: 1; padding: 2rem 2.5rem; overflow-y: auto; font-size: 14px; line-height: 1.9; color: var(--ink); white-space: pre-wrap; max-height: calc(100vh - 120px); }
-.output-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; padding: 3rem; color: var(--muted); }
-.placeholder-icon { font-size: 48px; margin-bottom: 1rem; opacity: 0.35; }
-.placeholder-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--ink); margin-bottom: 0.5rem; font-weight: 600; }
-.placeholder-sub { font-size: 13px; line-height: 1.7; max-width: 340px; }
-.sample-badge { display: inline-block; background: var(--gold-dim); border: 1px solid var(--gold-border); border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #8a6520; margin-top: 1rem; cursor: pointer; }
-.sample-badge:hover { background: rgba(200,152,58,0.18); }
-.format-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--gold-dim); border: 1px solid var(--gold-border); border-radius: 6px; padding: 5px 10px; margin-bottom: 1rem; font-size: 11px; color: #8a6520; font-family: 'DM Sans', sans-serif; }
-.word-count { font-size: 11px; color: var(--muted); margin-top: 3px; text-align: right; }
-
-/* ── ONBOARDING OVERLAY ── */
-.onboard-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 300; backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-.onboard-overlay.open { opacity: 1; pointer-events: all; }
-.onboard-box { background: var(--white); border-radius: 24px; padding: 2.5rem; max-width: 480px; width: 90%; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.15); transform: translateY(20px); transition: transform 0.3s; }
-.onboard-overlay.open .onboard-box { transform: translateY(0); }
-.onboard-emoji { font-size: 52px; margin-bottom: 1rem; }
-.onboard-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--ink); margin-bottom: 0.5rem; font-weight: 700; line-height: 1.2; }
-.onboard-box p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 1.5rem; font-weight: 300; }
-.onboard-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; text-align: left; }
-.onboard-step { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; background: var(--surface); border-radius: 10px; }
-.onboard-step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--gold); color: var(--black); font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-.onboard-step p { font-size: 13px; color: var(--ink); line-height: 1.5; margin: 0; font-weight: 400; }
-.onboard-free-note { font-size: 12px; color: var(--green); font-weight: 500; margin-bottom: 1.25rem; }
-.onboard-btn { width: 100%; padding: 14px; background: var(--black); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
-.onboard-btn:hover { background: #2a2a2a; }
-
-/* ── SUCCESS OVERLAY ── */
-.success-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 400; backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-.success-overlay.open { opacity: 1; pointer-events: all; }
-.success-box { background: var(--white); border-radius: 24px; padding: 2.5rem; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.15); transform: translateY(20px); transition: transform 0.3s; }
-.success-overlay.open .success-box { transform: translateY(0); }
-.success-emoji { font-size: 56px; margin-bottom: 1rem; }
-.success-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; color: var(--ink); margin-bottom: 0.5rem; font-weight: 700; }
-.success-box p { font-size: 13px; color: var(--muted); line-height: 1.75; margin-bottom: 0.75rem; font-weight: 300; }
-.success-ref { font-size: 12px; background: var(--surface); border-radius: 8px; padding: 8px 14px; display: inline-block; margin-bottom: 1.5rem; color: var(--muted); font-family: monospace; }
-.success-btn { width: 100%; padding: 13px; background: var(--gold); color: var(--black); border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
-.success-btn:hover { background: var(--gold-light); }
-.success-whatsapp { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 1rem; font-size: 13px; color: #25D366; text-decoration: none; }
-.success-whatsapp:hover { text-decoration: underline; }
-
-/* ── DOWNLOAD COMING SOON ── */
-.download-soon-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 250; backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-.download-soon-overlay.open { opacity: 1; pointer-events: all; }
-.download-soon-box { background: var(--white); border-radius: 20px; padding: 2rem; max-width: 380px; width: 90%; text-align: center; box-shadow: 0 16px 48px rgba(0,0,0,0.12); transform: translateY(16px); transition: transform 0.3s; }
-.download-soon-overlay.open .download-soon-box { transform: translateY(0); }
-.download-soon-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--ink); margin-bottom: 0.5rem; font-weight: 700; }
-.download-soon-box p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 1.25rem; }
-.download-soon-close { padding: 10px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--muted); cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; }
-
-/* ── PAYWALL ── */
-.paywall-overlay { position: fixed; inset: 0; background: rgba(250,250,248,0.96); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(8px); }
-.paywall-overlay.open { opacity: 1; pointer-events: all; }
-.paywall-box { background: var(--white); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem; max-width: 460px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1); transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
-.paywall-overlay.open .paywall-box { transform: translateY(0); }
-.paywall-icon { font-size: 44px; margin-bottom: 1rem; }
-.paywall-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; color: var(--ink); margin-bottom: 0.5rem; font-weight: 700; }
-.paywall-box p { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 1.75rem; font-weight: 300; }
-.paywall-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-.paywall-plan { border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; cursor: pointer; transition: all 0.2s; text-align: left; }
-.paywall-plan:hover { border-color: var(--gold-border); background: var(--gold-dim); }
-.paywall-plan.selected { border-color: var(--gold); background: var(--gold-dim); }
-.plan-name { font-size: 10px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
-.plan-price { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--ink); font-weight: 600; line-height: 1; }
-.plan-period { font-size: 11px; color: var(--muted); margin-top: 3px; }
-.plan-save { font-size: 10px; color: var(--green); font-weight: 500; margin-top: 4px; }
-.paywall-btn { width: 100%; padding: 13px; background: var(--black); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; margin-bottom: 0.75rem; }
-.paywall-btn:hover { background: #2a2a2a; }
-.paywall-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.paywall-skip { font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; }
-.pay-form-field { margin-bottom: 0.75rem; text-align: left; }
-.pay-form-field label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
-.pay-form-field input { width: 100%; padding: 11px 13px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--ink); outline: none; }
-.pay-form-field input:focus { border-color: var(--gold-border); }
-.back-link { font-size: 12px; color: var(--muted); cursor: pointer; margin-bottom: 1rem; display: inline-block; text-align: left; width: 100%; }
-.secure-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 0.5rem; }
-
-/* ── MOBILE ── */
-@media (max-width: 768px) {
-  nav { padding: 0 1rem; height: 56px; }
-  .nav-name { font-size: 13px; }
-  .usage-text { display: none; }
-  .upgrade-btn { padding: 7px 12px; font-size: 12px; }
-  .app-layout { grid-template-columns: 1fr; }
-  .sidebar { max-height: none; border-right: none; border-bottom: 2px solid var(--border); padding: 1rem; overflow-y: visible; }
-  .sidebar-toggle { display: flex; }
-  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 5px; }
-  .cat-btn { padding: 7px 4px; font-size: 10px; }
-  .cat-icon { font-size: 14px; }
-  select, input[type="text"], textarea { font-size: 16px !important; padding: 11px 12px; }
-  textarea { min-height: 80px; }
-  .generate-btn { padding: 14px; font-size: 15px; }
-  .output-area { min-height: 50vh; }
-  .output-topbar { padding: 0.75rem 1rem; }
-  .output-body { padding: 1.25rem 1rem; font-size: 13px; max-height: none; min-height: 280px; }
-  .output-placeholder { min-height: 220px; padding: 1.5rem 1rem; }
-  .placeholder-icon { font-size: 36px; }
-  .placeholder-title { font-size: 1.2rem; }
-  .paywall-box { padding: 1.75rem 1.25rem; }
-  .paywall-box h2 { font-size: 1.5rem; }
-  .paywall-plans { gap: 0.75rem; }
-  .onboard-box { padding: 1.75rem 1.25rem; }
-  .onboard-box h2 { font-size: 1.6rem; }
+.container{
+    max-width:900px;
+    margin:40px auto;
+    background:#fff;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
-@media (max-width: 380px) {
-  .cat-grid { grid-template-columns: repeat(2, 1fr); }
-  .paywall-plans { grid-template-columns: 1fr; }
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── DONATION BANNER ── */
-.donation-banner { background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%); border-bottom: 2px solid rgba(200,152,58,0.3); }
-.donation-inner { display: flex; align-items: center; justify-content: space-between; padding: 10px 2rem; gap: 1rem; flex-wrap: wrap; }
-.donation-left { display: flex; align-items: center; gap: 12px; }
-.donation-icon { font-size: 20px; flex-shrink: 0; }
-.donation-title { font-size: 13px; font-weight: 500; color: #F0EDE6; line-height: 1.3; }
-.donation-sub { font-size: 11px; color: #888; margin-top: 2px; }
-.donation-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
-.donation-details-btn { font-size: 12px; padding: 7px 14px; border: 1px solid rgba(200,152,58,0.35); border-radius: 7px; background: transparent; color: #C8983A; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: all 0.2s; white-space: nowrap; }
-.donation-details-btn:hover { background: rgba(200,152,58,0.1); }
-.donation-wa-btn { font-size: 12px; padding: 7px 14px; border: none; border-radius: 7px; background: rgba(37,211,102,0.15); color: #25D366; font-family: 'DM Sans',sans-serif; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; transition: all 0.2s; }
-.donation-wa-btn:hover { background: rgba(37,211,102,0.25); }
-.donation-close-btn { font-size: 18px; color: #555; cursor: pointer; background: none; border: none; padding: 2px 8px; line-height: 1; flex-shrink: 0; }
-.donation-close-btn:hover { color: #999; }
-.donate-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(6px); }
-.donate-overlay.open { opacity: 1; pointer-events: all; }
-.donate-box { background: #1A1A1A; border: 1px solid rgba(200,152,58,0.25); border-radius: 24px; padding: 2rem; max-width: 440px; width: 90%; position: relative; transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
-.donate-overlay.open .donate-box { transform: translateY(0); }
-.donate-x { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; color: #888; }
-.donate-x:hover { color: #F0EDE6; }
-.donate-box h2 { font-family: 'Cormorant Garamond',serif; font-size: 1.7rem; color: #F0EDE6; margin-bottom: 0.4rem; font-weight: 700; }
-.donate-desc { font-size: 13px; color: #888; line-height: 1.75; margin-bottom: 1.25rem; font-weight: 300; }
-.donate-account { background: #0A0A0A; border: 1px solid rgba(200,152,58,0.2); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
-.dar { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.dar:last-child { border-bottom: none; padding-bottom: 0; }
-.dal { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.05em; }
-.dav { font-size: 13px; color: #F0EDE6; font-weight: 500; }
-.dav.number { font-family: monospace; font-size: 16px; color: #C8983A; letter-spacing: 2px; }
-.dcopy { font-size: 11px; padding: 3px 10px; background: rgba(200,152,58,0.1); border: 1px solid rgba(200,152,58,0.2); border-radius: 5px; color: #C8983A; cursor: pointer; font-family: 'DM Sans',sans-serif; }
-.dcopy:hover { background: rgba(200,152,58,0.2); }
-.donate-amounts { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
-.damt { padding: 8px 16px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; background: rgba(255,255,255,0.03); color: #F0EDE6; font-size: 13px; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: all 0.2s; }
-.damt:hover { border-color: rgba(200,152,58,0.35); color: #C8983A; background: rgba(200,152,58,0.08); }
-.donate-wa-link { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.2); border-radius: 10px; color: #25D366; text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s; margin-bottom: 0.75rem; }
-.donate-wa-link:hover { background: rgba(37,211,102,0.22); }
-.donate-thank { font-size: 11px; color: #555; text-align: center; }
-@media (max-width: 768px) { .donation-inner { padding: 10px 1rem; } .donation-sub { display: none; } .donate-nav-btn { display: none; } }
-@media (min-width: 769px) { .sidebar-content { display: flex !important; flex-direction: column; gap: 1rem; } .sidebar-toggle { display: none !important; } }
+h1{
+    text-align:center;
+    color:#111;
+}
+
+p{
+    text-align:center;
+    color:#666;
+}
+
+textarea{
+    width:100%;
+    height:180px;
+    padding:15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+    resize:none;
+    margin-top:20px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    border:none;
+    border-radius:8px;
+    background:#111;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#333;
+}
+
+.output{
+    margin-top:30px;
+    padding:20px;
+    background:#fafafa;
+    border-radius:8px;
+    border:1px solid #ddd;
+    white-space:pre-wrap;
+    line-height:1.7;
+    min-height:150px;
+}
 
 </style>
+
 </head>
+
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="index.html" class="nav-logo">
-    <div class="nav-logo-mark"><span>M</span></div>
-    <span class="nav-name">MeringoDocs</span>
-  </a>
-  <div class="nav-right">
-    <div class="usage-pill">
-      <span class="usage-text">Free left:</span>
-      <span class="usage-count" id="usageCount">5</span>
-    </div>
-    <button class="donate-nav-btn" onclick="showDonateModal()">&#128591; Support us</button>
-    <button class="upgrade-btn" onclick="showPaywall()">Upgrade &#8358;5,000</button>
-  </div>
-</nav>
+<div class="container">
 
-<!-- MAIN -->
-<div class="app-layout">
-  <div class="sidebar">
+<h1>MeringoDocs</h1>
 
-    <!-- MOBILE TOGGLE -->
-    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
-      <span>&#9997;&#65039; What do you want to write?</span>
-      <span class="sidebar-toggle-icon">&#9650;</span>
-    </button>
+<p>
+AI-powered writing assistant for students and professionals
+</p>
 
-    <div class="sidebar-content" id="sidebarContent">
+<textarea 
+id="prompt" 
+placeholder="Type what you want MeringoDocs to write for you...">
+</textarea>
 
-      <div class="nav-tabs">
-        <button class="nav-tab active" onclick="switchMain('write',this)">Write</button>
-        <button class="nav-tab" onclick="switchMain('reformat',this)">Reformat</button>
-        <button class="nav-tab" onclick="switchMain('references',this)">References</button>
-        <button class="nav-tab" onclick="switchMain('history',this)">History</button>
-      </div>
+<button onclick="generateText()">
+Generate Content
+</button>
 
-      <!-- WRITE -->
-      <div class="main-panel active" id="main-write">
-        <div>
-          <div class="sidebar-label">Choose a category</div>
-          <div class="cat-grid">
-            <button class="cat-btn active" onclick="selectCat('academic',this)"><span class="cat-icon">&#128196;</span>Academic</button>
-            <button class="cat-btn" onclick="selectCat('assignment',this)"><span class="cat-icon">&#128221;</span>Assignment</button>
-            <button class="cat-btn" onclick="selectCat('essay',this)"><span class="cat-icon">&#9997;&#65039;</span>Essay</button>
-            <button class="cat-btn" onclick="selectCat('email',this)"><span class="cat-icon">&#128231;</span>Email</button>
-            <button class="cat-btn" onclick="selectCat('creative',this)"><span class="cat-icon">&#127912;</span>Creative</button>
-            <button class="cat-btn" onclick="selectCat('youtube',this)"><span class="cat-icon">&#127916;</span>YouTube Script</button>
-            <button class="cat-btn" onclick="selectCat('speech',this)"><span class="cat-icon">&#127908;</span>Speech</button>
-            <button class="cat-btn" onclick="selectCat('business',this)"><span class="cat-icon">&#128188;</span>Business</button>
-            <button class="cat-btn" onclick="selectCat('report',this)"><span class="cat-icon">&#128202;</span>Report</button>
-            <button class="cat-btn" onclick="selectCat('letter',this)"><span class="cat-icon">&#9993;&#65039;</span>Letter</button>
-            <button class="cat-btn" onclick="selectCat('social',this)"><span class="cat-icon">&#128241;</span>Social Media</button>
-            <button class="cat-btn" onclick="selectCat('cv',this)"><span class="cat-icon">&#129534;</span>CV / Cover</button>
-          </div>
-        </div>
-        <div class="divider"></div>
-
-        <!-- ACADEMIC -->
-        <div class="task-panel active" id="panel-academic">
-          <div><label class="field-label">Document type</label>
-            <select id="acDocType">
-              <option value="seminar paper">Seminar paper</option>
-              <option value="research proposal">Research proposal</option>
-              <option value="dissertation chapter">Dissertation chapter</option>
-              <option value="journal article">Journal article</option>
-              <option value="abstract">Abstract</option>
-              <option value="literature review">Literature review</option>
-              <option value="case study">Case study</option>
-            </select></div>
-          <div><label class="field-label">Institution type</label>
-            <select id="acInst">
-              <option value="university">University</option>
-              <option value="polytechnic">Polytechnic</option>
-              <option value="college of education">College of Education</option>
-              <option value="monotechnic">Monotechnic</option>
-              <option value="school of nursing">School of Nursing</option>
-            </select></div>
-          <div><label class="field-label">Department</label>
-            <select id="acField">
-              <option value="Urban and Regional Planning">Urban &amp; Regional Planning</option>
-              <option value="Architecture">Architecture</option>
-              <option value="Civil Engineering">Civil Engineering</option>
-              <option value="Geography">Geography</option>
-              <option value="Economics">Economics</option>
-              <option value="Nursing">Nursing</option>
-              <option value="Education">Education</option>
-              <option value="Business Administration">Business Administration</option>
-              <option value="Accounting">Accounting</option>
-              <option value="Law">Law</option>
-              <option value="Mass Communication">Mass Communication</option>
-              <option value="Computer Science">Computer Science</option>
-              <option value="other">Other</option>
-            </select></div>
-          <div><label class="field-label">Word count</label>
-            <select id="acWords">
-              <option value="500">500 words</option>
-              <option value="1000" selected>1,000 words</option>
-              <option value="2000">2,000 words</option>
-              <option value="3000">3,000 words</option>
-            </select></div>
-          <div><label class="field-label">Topic or title</label>
-            <input type="text" id="acTopic" placeholder="e.g. Urban sprawl and food security in Lagos" /></div>
-          <div><label class="field-label">Your notes (optional)</label>
-            <textarea id="acNotes" rows="4" placeholder="Paste bullet points, rough draft, or key ideas..."></textarea>
-            <div class="word-count" id="acNoteCount">0 words</div></div>
-          <button class="generate-btn" id="acBtn" onclick="runAcademic()">Generate document</button>
-        </div>
-
-        <!-- ASSIGNMENT -->
-        <div class="task-panel" id="panel-assignment">
-          <div><label class="field-label">Assignment type</label>
-            <select id="assType">
-              <option value="short answer questions">Short answer questions</option>
-              <option value="long answer essay questions">Long answer questions</option>
-              <option value="take-home exam">Take-home exam</option>
-              <option value="coursework">Coursework</option>
-              <option value="project write-up">Project write-up</option>
-              <option value="lab report">Lab report</option>
-            </select></div>
-          <div><label class="field-label">Subject or course</label>
-            <input type="text" id="assSubject" placeholder="e.g. Economics, Urban Planning, Nursing..." /></div>
-          <div><label class="field-label">Paste your question(s) here</label>
-            <textarea id="assQuestion" rows="5" placeholder="Paste your assignment questions exactly as given by your lecturer..."></textarea></div>
-          <div><label class="field-label">Your notes or ideas (optional)</label>
-            <textarea id="assNotes" rows="3" placeholder="Any points you want included..."></textarea></div>
-          <button class="generate-btn" id="assBtn" onclick="runAssignment()">Answer assignment</button>
-        </div>
-
-        <!-- ESSAY -->
-        <div class="task-panel" id="panel-essay">
-          <div><label class="field-label">Essay type</label>
-            <select id="essType">
-              <option value="argumentative">Argumentative</option>
-              <option value="descriptive">Descriptive</option>
-              <option value="narrative">Narrative</option>
-              <option value="expository">Expository</option>
-              <option value="comparative">Comparative</option>
-              <option value="reflective">Reflective</option>
-              <option value="persuasive">Persuasive</option>
-            </select></div>
-          <div><label class="field-label">Topic or question</label>
-            <input type="text" id="essTopic" placeholder="e.g. Should Nigeria adopt renewable energy fully?" /></div>
-          <div><label class="field-label">Word count</label>
-            <select id="essWords">
-              <option value="300">300 words</option>
-              <option value="500" selected>500 words</option>
-              <option value="800">800 words</option>
-              <option value="1000">1,000 words</option>
-            </select></div>
-          <div><label class="field-label">Key points (optional)</label>
-            <textarea id="essNotes" rows="3" placeholder="Arguments or examples you want included..."></textarea></div>
-          <button class="generate-btn" id="essBtn" onclick="runEssay()">Write essay</button>
-        </div>
-
-        <!-- EMAIL -->
-        <div class="task-panel" id="panel-email">
-          <div><label class="field-label">Email type</label>
-            <select id="emailType">
-              <option value="formal request">Formal request</option>
-              <option value="complaint">Complaint</option>
-              <option value="job application">Job application</option>
-              <option value="follow-up">Follow-up</option>
-              <option value="apology">Apology</option>
-              <option value="introduction">Introduction</option>
-              <option value="thank you">Thank you</option>
-            </select></div>
-          <div><label class="field-label">Who is this email to?</label>
-            <input type="text" id="emailTo" placeholder="e.g. My HOD, a potential employer..." /></div>
-          <div><label class="field-label">What do you want to say?</label>
-            <textarea id="emailContent" rows="4" placeholder="Describe the situation and what the email needs to say..."></textarea></div>
-          <button class="generate-btn" id="emailBtn" onclick="runEmail()">Write email</button>
-        </div>
-
-        <!-- CREATIVE -->
-        <div class="task-panel" id="panel-creative">
-          <div><label class="field-label">Creative type</label>
-            <select id="creType">
-              <option value="short story">Short story</option>
-              <option value="poem">Poem</option>
-              <option value="flash fiction">Flash fiction</option>
-              <option value="creative non-fiction">Creative non-fiction</option>
-              <option value="dialogue or scene">Dialogue / scene</option>
-              <option value="product description">Product description</option>
-            </select></div>
-          <div><label class="field-label">Topic, theme, or prompt</label>
-            <input type="text" id="creTopic" placeholder="e.g. A student's first day in Lagos..." /></div>
-          <div><label class="field-label">Tone</label>
-            <select id="creTone">
-              <option value="warm and engaging">Warm and engaging</option>
-              <option value="humorous">Humorous</option>
-              <option value="dramatic">Dramatic</option>
-              <option value="inspirational">Inspirational</option>
-              <option value="reflective">Reflective</option>
-            </select></div>
-          <div><label class="field-label">Additional details (optional)</label>
-            <textarea id="creNotes" rows="3" placeholder="Characters, settings, specific scenes..."></textarea></div>
-          <button class="generate-btn" id="creBtn" onclick="runCreative()">Write it</button>
-        </div>
-
-        <!-- YOUTUBE -->
-        <div class="task-panel" id="panel-youtube">
-          <div><label class="field-label">Script type</label>
-            <select id="ytType">
-              <option value="full video script">Full video script</option>
-              <option value="intro hook only">Intro hook only</option>
-              <option value="talking points outline">Talking points outline</option>
-              <option value="YouTube Shorts script (60 seconds)">YouTube Shorts (60 secs)</option>
-            </select></div>
-          <div><label class="field-label">Video topic</label>
-            <input type="text" id="ytTopic" placeholder="e.g. 5 ways Nigerian students can earn online..." /></div>
-          <div><label class="field-label">Target audience</label>
-            <input type="text" id="ytAudience" placeholder="e.g. Nigerian university students" /></div>
-          <div><label class="field-label">Key points (optional)</label>
-            <textarea id="ytNotes" rows="3" placeholder="Specific examples, calls to action..."></textarea></div>
-          <button class="generate-btn" id="ytBtn" onclick="runYoutube()">Write script</button>
-        </div>
-
-        <!-- SPEECH -->
-        <div class="task-panel" id="panel-speech">
-          <div><label class="field-label">Speech type</label>
-            <select id="spType">
-              <option value="graduation speech">Graduation speech</option>
-              <option value="welcome address">Welcome address</option>
-              <option value="valedictory speech">Valedictory speech</option>
-              <option value="motivational speech">Motivational speech</option>
-              <option value="wedding toast">Wedding toast</option>
-              <option value="debate argument">Debate argument</option>
-            </select></div>
-          <div><label class="field-label">Topic or occasion</label>
-            <input type="text" id="spTopic" placeholder="e.g. Graduating class of 2025 at FUTA..." /></div>
-          <div><label class="field-label">Duration</label>
-            <select id="spDuration">
-              <option value="2 minutes">2 minutes</option>
-              <option value="5 minutes" selected>5 minutes</option>
-              <option value="10 minutes">10 minutes</option>
-            </select></div>
-          <div><label class="field-label">Key points and personal details (optional)</label>
-            <textarea id="spNotes" rows="3" placeholder="Personal stories, names, specific messages..."></textarea></div>
-          <button class="generate-btn" id="spBtn" onclick="runSpeech()">Write speech</button>
-        </div>
-
-        <!-- BUSINESS -->
-        <div class="task-panel" id="panel-business">
-          <div><label class="field-label">Document type</label>
-            <select id="bizType">
-              <option value="business plan">Business plan</option>
-              <option value="executive summary">Executive summary</option>
-              <option value="business proposal">Business proposal</option>
-              <option value="marketing plan">Marketing plan</option>
-              <option value="feasibility study">Feasibility study</option>
-              <option value="internal memo">Internal memo</option>
-            </select></div>
-          <div><label class="field-label">Business name and type</label>
-            <input type="text" id="bizName" placeholder="e.g. Meringo Foods — garri processing business" /></div>
-          <div><label class="field-label">Key details</label>
-            <textarea id="bizNotes" rows="4" placeholder="Describe your business, target market, products, location..."></textarea></div>
-          <button class="generate-btn" id="bizBtn" onclick="runBusiness()">Write document</button>
-        </div>
-
-        <!-- REPORT -->
-        <div class="task-panel" id="panel-report">
-          <div><label class="field-label">Report type</label>
-            <select id="repType">
-              <option value="field report">Field report</option>
-              <option value="progress report">Progress report</option>
-              <option value="incident report">Incident report</option>
-              <option value="technical report">Technical report</option>
-              <option value="book or article review">Book / article review</option>
-            </select></div>
-          <div><label class="field-label">Report topic</label>
-            <input type="text" id="repTopic" placeholder="e.g. Field survey of road conditions in Ado-Ekiti..." /></div>
-          <div><label class="field-label">Your observations or data</label>
-            <textarea id="repNotes" rows="5" placeholder="Paste your raw field notes, observations, or data here..."></textarea></div>
-          <button class="generate-btn" id="repBtn" onclick="runReport()">Write report</button>
-        </div>
-
-        <!-- LETTER -->
-        <div class="task-panel" id="panel-letter">
-          <div><label class="field-label">Letter type</label>
-            <select id="letType">
-              <option value="formal letter">Formal letter</option>
-              <option value="cover letter">Cover letter</option>
-              <option value="complaint letter">Complaint letter</option>
-              <option value="recommendation letter">Recommendation letter</option>
-              <option value="reference letter">Reference letter</option>
-              <option value="permission or request letter">Permission / request letter</option>
-            </select></div>
-          <div><label class="field-label">Who is this letter to?</label>
-            <input type="text" id="letTo" placeholder="e.g. The Vice Chancellor, an HR manager..." /></div>
-          <div><label class="field-label">Purpose and key details</label>
-            <textarea id="letContent" rows="4" placeholder="What is the letter about? What do you need it to say?"></textarea></div>
-          <button class="generate-btn" id="letBtn" onclick="runLetter()">Write letter</button>
-        </div>
-
-        <!-- SOCIAL -->
-        <div class="task-panel" id="panel-social">
-          <div><label class="field-label">Platform</label>
-            <select id="socPlatform">
-              <option value="Instagram caption">Instagram caption</option>
-              <option value="Twitter or X thread">Twitter / X thread</option>
-              <option value="LinkedIn post">LinkedIn post</option>
-              <option value="Facebook post">Facebook post</option>
-              <option value="WhatsApp broadcast message">WhatsApp broadcast</option>
-            </select></div>
-          <div><label class="field-label">What is the post about?</label>
-            <input type="text" id="socTopic" placeholder="e.g. Promoting my academic writing service..." /></div>
-          <div><label class="field-label">Tone</label>
-            <select id="socTone">
-              <option value="engaging and warm">Engaging and warm</option>
-              <option value="professional">Professional</option>
-              <option value="humorous">Humorous</option>
-              <option value="urgent and persuasive">Urgent and persuasive</option>
-            </select></div>
-          <div><label class="field-label">Key message or offer (optional)</label>
-            <textarea id="socNotes" rows="3" placeholder="Details, hashtags, calls to action..."></textarea></div>
-          <button class="generate-btn" id="socBtn" onclick="runSocial()">Write post</button>
-        </div>
-
-        <!-- CV -->
-        <div class="task-panel" id="panel-cv">
-          <div><label class="field-label">Document type</label>
-            <select id="cvType">
-              <option value="CV">Full CV</option>
-              <option value="cover letter">Cover letter</option>
-              <option value="personal statement">Personal statement</option>
-              <option value="LinkedIn bio or summary">LinkedIn bio</option>
-            </select></div>
-          <div><label class="field-label">Your name and field</label>
-            <input type="text" id="cvName" placeholder="e.g. Adeyemi Oladele — Urban Planner" /></div>
-          <div><label class="field-label">Your experience, skills, and qualifications</label>
-            <textarea id="cvDetails" rows="5" placeholder="List your qualifications, skills, work experience, achievements..."></textarea></div>
-          <div><label class="field-label">Role you are applying for (optional)</label>
-            <input type="text" id="cvJob" placeholder="e.g. Town Planning Officer at Ekiti State Government" /></div>
-          <button class="generate-btn" id="cvBtn" onclick="runCV()">Write CV / cover letter</button>
-        </div>
-      </div>
-
-      <!-- REFORMAT -->
-      <div class="main-panel" id="main-reformat">
-        <div><label class="field-label">Paste your document here</label>
-          <textarea id="reformatInput" rows="8" placeholder="Paste any document — assignment, essay, seminar paper, email, letter — and MeringoDocs will reformat it to sound natural, human, and polished."></textarea></div>
-        <div><label class="field-label">Document type</label>
-          <select id="reformatDocType">
-            <option value="academic paper">Academic / seminar paper</option>
-            <option value="essay">Essay</option>
-            <option value="assignment answer">Assignment answer</option>
-            <option value="email">Email</option>
-            <option value="letter">Letter</option>
-            <option value="report">Report</option>
-            <option value="creative writing">Creative writing</option>
-            <option value="business document">Business document</option>
-          </select></div>
-        <div><label class="field-label">Fix level</label>
-          <select id="fixLevel">
-            <option value="light">Light — fix structure and formatting only</option>
-            <option value="full">Full — rewrite and remove all AI patterns</option>
-          </select></div>
-        <button class="generate-btn" id="reformatBtn" onclick="runReformat()">Reformat document</button>
-      </div>
-
-      <!-- REFERENCES -->
-      <div class="main-panel" id="main-references">
-        <div><label class="field-label">Paste raw references to fix</label>
-          <textarea id="refInput" rows="5" placeholder="Paste a messy reference list here and MeringoDocs will format it into proper APA 7th edition."></textarea></div>
-        <div><label class="field-label">Or enter a topic to generate references</label>
-          <input type="text" id="refTopic" placeholder="e.g. housing estates and urban growth in Nigeria" /></div>
-        <div><label class="field-label">Number of references</label>
-          <select id="refCount">
-            <option value="5">5 references</option>
-            <option value="10" selected>10 references</option>
-            <option value="15">15 references</option>
-          </select></div>
-        <button class="generate-btn" id="refBtn" onclick="runReferences()">Generate APA 7th references</button>
-      </div>
-
-      <!-- HISTORY -->
-      <div class="main-panel" id="main-history">
-        <div class="sidebar-label">Recent documents</div>
-        <div class="history-list" id="historyList">
-          <div class="history-empty">No documents yet. Generate your first document to see it here.</div>
-        </div>
-      </div>
-
-    </div><!-- end sidebar-content -->
-  </div>
-
-  <!-- OUTPUT -->
-  <div class="output-area">
-    <div class="output-topbar">
-      <span class="output-title" id="outputTitle">Your document will appear here</span>
-      <div class="output-actions">
-        <button class="action-btn" onclick="copyOutput()" id="copyBtn" style="display:none;">Copy text</button>
-        <button class="action-btn gold" onclick="showDownloadSoon()" id="downloadBtn" style="display:none;">&#8595; Download .docx</button>
-      </div>
-    </div>
-    <div class="output-body" id="outputBody">
-      <div class="output-placeholder">
-        <div class="placeholder-icon">&#9997;&#65039;</div>
-        <div class="placeholder-title">Ready to write anything</div>
-        <p class="placeholder-sub">Choose a category, fill in your details, and click generate. Your document appears here in seconds — human-quality, plagiarism-safe, and ready to submit.</p>
-        <span class="sample-badge" onclick="showSampleOutput()">&#128196; See a sample document</span>
-      </div>
-    </div>
-  </div>
+<div class="output" id="output">
+Your generated content will appear here...
 </div>
 
-<!-- ONBOARDING OVERLAY -->
-<div class="onboard-overlay" id="onboardOverlay">
-  <div class="onboard-box">
-    <div class="onboard-emoji">&#127891;</div>
-    <h2>Welcome to MeringoDocs</h2>
-    <p>Nigeria's most complete academic writing tool. Generate seminar papers, assignments, essays, emails, scripts, CVs, and more — in seconds.</p>
-    <div class="onboard-steps">
-      <div class="onboard-step">
-        <div class="onboard-step-num">1</div>
-        <p>Choose what you want to write from the category grid on the left.</p>
-      </div>
-      <div class="onboard-step">
-        <div class="onboard-step-num">2</div>
-        <p>Enter your topic, paste your notes or questions, and click Generate.</p>
-      </div>
-      <div class="onboard-step">
-        <div class="onboard-step-num">3</div>
-        <p>Your complete, human-quality document appears on the right. Copy and submit.</p>
-      </div>
-    </div>
-    <div class="onboard-free-note">&#10003; You have 5 free generations to start with — no payment needed</div>
-    <button class="onboard-btn" onclick="closeOnboarding()">Start writing for free</button>
-  </div>
 </div>
-
-<!-- SUCCESS OVERLAY -->
-<div class="success-overlay" id="successOverlay">
-  <div class="success-box">
-    <div class="success-emoji">&#127881;</div>
-    <h2>Payment successful!</h2>
-    <p>Welcome to MeringoDocs Pro. Your subscription is now active and you have unlimited access to every writing tool.</p>
-    <div class="success-ref" id="successRef">Ref: —</div>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:1.25rem;">Keep your reference number safe. Need help? Contact us on WhatsApp.</p>
-    <button class="success-btn" onclick="closeSuccess()">Start writing &#8594;</button>
-    <a href="https://wa.me/2348134667120" class="success-whatsapp" target="_blank">&#128172; WhatsApp support: +234 813 466 7120</a>
-  </div>
-</div>
-
-<!-- DOWNLOAD COMING SOON -->
-<div class="download-soon-overlay" id="downloadSoonOverlay">
-  <div class="download-soon-box">
-    <h3>&#128196; Word download — coming soon</h3>
-    <p>The .docx download feature is being built right now and will be available to all Pro subscribers very soon. For now, use the Copy button to copy your document and paste it into Microsoft Word.</p>
-    <p style="font-size:12px;color:var(--green);margin-bottom:1.25rem;">&#9998; We will notify you on WhatsApp when it goes live.</p>
-    <button class="download-soon-close" onclick="closeDownloadSoon()">OK, got it</button>
-  </div>
-</div>
-
-<!-- PAYWALL -->
-<div class="paywall-overlay" id="paywallOverlay">
-  <div class="paywall-box">
-    <div id="paywallStep1">
-      <div class="paywall-icon">&#127891;</div>
-      <h2>You have used your 5 free generations</h2>
-      <p>Subscribe to MeringoDocs Pro for unlimited documents across every category — academic papers, assignments, emails, scripts, CVs, business plans, and more.</p>
-      <div class="paywall-plans">
-        <div class="paywall-plan selected" id="planPro" onclick="selectPlan('pro')">
-          <div class="plan-name">Pro</div>
-          <div class="plan-price">&#8358;5,000</div>
-          <div class="plan-period">per month</div>
-        </div>
-        <div class="paywall-plan" id="planAnnual" onclick="selectPlan('annual')">
-          <div class="plan-name">Annual</div>
-          <div class="plan-price">&#8358;40,000</div>
-          <div class="plan-period">per year</div>
-          <div class="plan-save">Save &#8358;20,000</div>
-        </div>
-      </div>
-      <button class="paywall-btn" onclick="showPayForm()">Continue to payment</button>
-      <div class="paywall-skip" onclick="closePaywall()">No thanks, I will come back later</div>
-    </div>
-    <div id="paywallStep2" style="display:none;">
-      <span class="back-link" onclick="showPlanSelect()">&#8592; Back to plans</span>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;margin-bottom:0.25rem;text-align:left;">Complete payment</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;text-align:left;" id="payFormPlanLabel">Pro plan &#8212; &#8358;5,000/month</p>
-      <div class="pay-form-field"><label>Full name</label><input type="text" id="pwName" placeholder="e.g. Adeyemi Oladele" /></div>
-      <div class="pay-form-field"><label>Email address</label><input type="email" id="pwEmail" placeholder="your@email.com" /></div>
-      <button class="paywall-btn" id="pwPayBtn" onclick="processPayment()" style="margin-top:0.5rem;">Pay with Paystack</button>
-      <div class="secure-note">&#128274; Secured by Paystack &#183; Cards &#183; Bank transfer &#183; USSD</div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- DONATE MODAL -->
-<div class="donate-overlay" id="donateOverlay">
-  <div class="donate-box">
-    <button class="donate-x" onclick="closeDonateModal()">✕</button>
-    <div class="donate-emoji">🙏</div>
-    <h2>Support MeringoDocs</h2>
-    <p class="donate-desc">I am a Nigerian lecturer who built this tool from scratch to help students write better. Your donation — any amount — goes directly towards funding the AI engine, adding Word downloads, PowerPoint generation, and WhatsApp ordering. Every contributor becomes part of this story.</p>
-
-    <div class="donate-account">
-      <div class="dar">
-        <span class="dal">Bank</span>
-        <span class="dav">Guaranty Trust Bank (GTB)</span>
-      </div>
-      <div class="dar">
-        <span class="dal">Account name</span>
-        <span class="dav">Oyinlana Ayodeji</span>
-      </div>
-      <div class="dar">
-        <span class="dal">Account number</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="dav number">0141437939</span>
-          <button class="dcopy" onclick="copyAccNumber()">Copy</button>
-        </div>
-      </div>
-    </div>
-
-    <p style="font-size:12px;color:#888;margin-bottom:0.75rem;">Suggested amounts — or send any amount you can:</p>
-    <div class="donate-amounts">
-      <button class="damt" onclick="copyAccNumber()">₦500</button>
-      <button class="damt" onclick="copyAccNumber()">₦1,000</button>
-      <button class="damt" onclick="copyAccNumber()">₦2,000</button>
-      <button class="damt" onclick="copyAccNumber()">₦5,000</button>
-      <button class="damt" onclick="copyAccNumber()">₦10,000</button>
-    </div>
-
-    <a href="https://wa.me/2348134667120?text=Hi%20Meringo%2C%20I%20just%20made%20a%20donation%20to%20support%20MeringoDocs%20%F0%9F%99%8F" target="_blank" class="donate-wa-link">
-      💬 Tap here to notify me after donating
-    </a>
-    <div class="donate-thank">Thank you from the bottom of my heart. Every kobo counts. — Meringo</div>
-  </div>
-</div>
-
 
 <script>
-// ── STATE ──────────────────────────────────────────────────
-const MAX_FREE = 5;
 
-// Anti-bypass: use a hash-based session key so incognito gets fewer attempts
-function getSessionKey() {
-  let k = sessionStorage.getItem('md_sk');
-  if (!k) { k = Math.random().toString(36).slice(2); sessionStorage.setItem('md_sk', k); }
-  return k;
-}
+async function generateText() {
 
-function getUsed() {
-  const ls = parseInt(localStorage.getItem('md_used') || '0');
-  const ss = parseInt(sessionStorage.getItem('md_ss_used') || '0');
-  return Math.max(ls, ss);
-}
+    const prompt = document.getElementById("prompt").value;
 
-function setUsed(n) {
-  localStorage.setItem('md_used', n);
-  sessionStorage.setItem('md_ss_used', n);
-}
+    const output = document.getElementById("output");
 
-let usedGenerations = getUsed();
-let selectedPlan = 'pro';
-let currentOutput = '';
-let docHistory = JSON.parse(localStorage.getItem('md_history') || '[]');
+    if(prompt.trim() === ""){
 
-const plans = {
-  pro: { label: 'Pro plan \u2014 \u20a65,000/month', amount: 500000 },
-  annual: { label: 'Annual plan \u2014 \u20a640,000/year', amount: 4000000 }
-};
+        alert("Please enter a prompt");
 
-// ── SYSTEM PROMPT ──────────────────────────────────────────
-function buildSystem(contextNote) {
-  return `You are MeringoDocs, an expert writer producing completely original, human-sounding content for Nigerian students and professionals. Every word you write must pass AI detection tools including Turnitin, GPTZero, and Originality.ai.
-
-CORE WRITING PHILOSOPHY:
-Write the way a thoughtful, intelligent Nigerian graduate writes — with personality, natural rhythm, and genuine conviction. Your writing must feel alive. Never mechanical. Never predictable.
-
-HOW TO WRITE IN A HUMAN WAY:
-- Vary sentence lengths deliberately. Short sentences land hard. Longer ones carry nuance and build argument. Mix them freely.
-- Let ideas connect organically. Do not announce every transition. Let the logic speak.
-- Use natural hedging where appropriate: evidence points to, this suggests, one might argue, it appears that.
-- Write with warmth and intellectual confidence. Sound like someone who genuinely cares about the subject.
-- Occasionally begin sentences with And, But, or So — real writers do this.
-- Use concrete, specific examples rather than vague generalisations.
-- Give paragraphs different rhythms. Not every paragraph should feel the same shape.
-
-WHAT YOU MUST NEVER DO — THESE TRIGGER AI DETECTORS:
-- Never use em dashes or ellipses for dramatic effect
-- Never open with: "In today's world", "It is important to note that", "This paper seeks to", "It is pertinent to state", "In conclusion it is evident that"
-- Never use: "Moreover", "Furthermore", "In addition to the foregoing", "It is worth noting that", "Needless to say"
-- Never write in rigid subject-verb-object patterns repeatedly
-- Never produce over-structured paragraphs that all follow the same shape
-- Never use impersonal, clinical, detached language that sounds like a textbook
-- Never use American spelling — always British English (organise, analyse, behaviour, recognise, programme, colour, labour, centre, favour)
-
-TONE FOR THIS SPECIFIC TASK:
-${contextNote}
-
-FOR ACADEMIC WORK:
-- Times New Roman 12pt, justified, block paragraphs — no first-line indent
-- Seminar papers and proposals: 1.5 line spacing
-- Dissertations: double line spacing
-- APA 7th edition citations and reference list with hanging indents
-- Start output with: [Times New Roman 12pt · APA 7th · British English · Justified · Block paragraphs]
-
-THE FINAL TEST: Would a real Nigerian academic supervisor, employer, or reader believe a thoughtful human wrote this? If yes, you have succeeded.`;
-}
-
-const tones = {
-  academic: 'Intelligent, fluent, and analytical — but never mechanical. Write like a sharp researcher with genuine curiosity.',
-  assignment: 'Direct and knowledgeable. Sound like a student who understands the subject deeply — confident but not arrogant.',
-  essay: 'Build your argument with genuine conviction. Vary the rhythm. Let your perspective come through naturally.',
-  email: 'Polished, warm, and human. Get to the point without being abrupt. Sound like a real professional — never stiff.',
-  creative: 'Expressive, vivid, and emotionally engaging. Bring scenes to life with sensory detail. Sound distinctly human.',
-  youtube: 'Conversational and energetic — write to be spoken aloud. Use short punchy sentences. Sound like a real person talking.',
-  speech: 'Written to be spoken. Use rhythm, natural pauses, and emotional weight. Warm, confident, and genuinely human.',
-  business: 'Clear, confident, and professional — but never robotic. Write like an experienced entrepreneur who knows their market.',
-  report: 'Precise and factual — but written with natural flow. Avoid bullet-point thinking dressed up as prose.',
-  letter: 'Polished and respectful — but genuinely human. Not stiff. Not templated.',
-  social: 'Engaging, warm, and authentic. Write like a real person connecting with their audience.',
-  cv: 'Confident, genuine, and warm. Highlight strengths naturally. Sound like a real person who is proud of their work.'
-};
-
-// ── INIT ───────────────────────────────────────────────────
-function init() {
-  updateUsageDisplay();
-  renderHistory();
-  // Show onboarding for first-time visitors
-  if (!localStorage.getItem('md_onboarded')) {
-    setTimeout(() => {
-      document.getElementById('onboardOverlay').classList.add('open');
-    }, 600);
-  }
-  // Auto-collapse sidebar on mobile by default
-  if (window.innerWidth <= 768) {
-    document.getElementById('sidebarContent').classList.add('hidden');
-    document.getElementById('sidebarToggle').classList.add('collapsed');
-  }
-}
-
-function updateUsageDisplay() {
-  const isSubscribed = localStorage.getItem('md_subscribed') === '1';
-  const el = document.getElementById('usageCount');
-  const textEl = document.querySelector('.usage-text');
-  if (isSubscribed) {
-    el.textContent = '\u221e';
-    if (textEl) textEl.textContent = 'Pro:';
-    return;
-  }
-  const left = Math.max(0, MAX_FREE - usedGenerations);
-  el.textContent = left;
-  if (left <= 1) el.style.color = '#c0392b';
-  else if (left <= 2) el.style.color = '#e67e22';
-  else el.style.color = 'var(--ink)';
-}
-
-function incrementUsage() {
-  usedGenerations++;
-  setUsed(usedGenerations);
-  updateUsageDisplay();
-}
-
-function checkLimit() {
-  const isSubscribed = localStorage.getItem('md_subscribed') === '1';
-  if (isSubscribed) return true;
-  if (usedGenerations >= MAX_FREE) { showPaywall(); return false; }
-  return true;
-}
-
-// ── MOBILE ─────────────────────────────────────────────────
-function toggleSidebar() {
-  const content = document.getElementById('sidebarContent');
-  const toggle = document.getElementById('sidebarToggle');
-  const isHidden = content.classList.contains('hidden');
-  content.classList.toggle('hidden', !isHidden);
-  toggle.classList.toggle('collapsed', !isHidden);
-}
-
-function collapseSidebarOnMobile() {
-  if (window.innerWidth <= 768) {
-    document.getElementById('sidebarContent').classList.add('hidden');
-    document.getElementById('sidebarToggle').classList.add('collapsed');
-    setTimeout(() => document.getElementById('outputBody').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-  }
-}
-
-// ── TABS ───────────────────────────────────────────────────
-function switchMain(name, btn) {
-  document.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('main-' + name).classList.add('active');
-  btn.classList.add('active');
-}
-
-function selectCat(cat, btn) {
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.task-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + cat).classList.add('active');
-}
-
-// ── WORD COUNT ─────────────────────────────────────────────
-const acNotesEl = document.getElementById('acNotes');
-if (acNotesEl) acNotesEl.addEventListener('input', function() {
-  const w = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
-  document.getElementById('acNoteCount').textContent = w + ' words';
-});
-
-// ── STREAM OUTPUT ──────────────────────────────────────────
-async function streamOutput(prompt, title, btnId, toneKey) {
-  if (!checkLimit()) return;
-
-  const outputBody = document.getElementById('outputBody');
-  const btn = document.getElementById(btnId);
-  const origHTML = btn.innerHTML;
-
-  document.getElementById('outputTitle').textContent = title;
-  outputBody.innerHTML = '';
-  currentOutput = '';
-  document.getElementById('copyBtn').style.display = 'none';
-  document.getElementById('downloadBtn').style.display = 'none';
-
-  btn.disabled = true;
-  btn.innerHTML = '<span style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle;"></span>Writing...';
-
-  const isAcademic = ['academic','assignment','report'].includes(toneKey);
-  if (isAcademic) {
-    const badge = document.createElement('div');
-    badge.className = 'format-badge';
-    badge.textContent = 'Times New Roman 12pt \u00b7 APA 7th \u00b7 British English \u00b7 Justified';
-    outputBody.appendChild(badge);
-  }
-
-  const textNode = document.createElement('div');
-  outputBody.appendChild(textNode);
-
-  try {
-    const res = await fetch('https://meringodocs-api.oyinlanadj.workers.dev', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        stream: true,
-        system: buildSystem(tones[toneKey] || tones.academic),
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
-            currentOutput += parsed.delta.text;
-            textNode.textContent = currentOutput;
-            outputBody.scrollTop = outputBody.scrollHeight;
-          }
-        } catch {}
-      }
+        return;
     }
 
-    document.getElementById('copyBtn').style.display = 'inline-block';
-    document.getElementById('downloadBtn').style.display = 'inline-block';
-    incrementUsage();
-    saveToHistory(title, toneKey);
-    collapseSidebarOnMobile();
+    output.innerHTML = "Generating content...";
 
-  } catch (err) {
-    textNode.innerHTML = '<div style="color:#c0392b;font-size:13px;line-height:1.7;padding:1rem;background:#fdf0ee;border-radius:8px;border:1px solid #f5c6c0;">&#9888;&#65039; <strong>Connection error.</strong> The AI writing engine is currently being set up. Please check back shortly or contact support on WhatsApp.<br><br><a href="https://wa.me/2348134667120" style="color:#25D366;font-weight:500;">&#128172; WhatsApp: +234 813 466 7120</a></div>';
-  }
+    try{
 
-  btn.disabled = false;
-  btn.innerHTML = origHTML;
-}
+        const response = await fetch(
+            "https://meringodocs-api.oyinlanadj.workers.dev/",
+            {
 
-// ── SAMPLE OUTPUT ──────────────────────────────────────────
-function showSampleOutput() {
-  const sample = `[Times New Roman 12pt · APA 7th Edition · British English · Justified · Block paragraphs]
+                method:"POST",
 
-URBAN EXPANSION AND HOUSING QUALITY IN AKURE METROPOLIS, ONDO STATE, NIGERIA
+                headers:{
+                    "Content-Type":"application/json"
+                },
 
-Abstract
+                body:JSON.stringify({
 
-Rapid urban growth in Nigerian cities has long been tied to declining residential quality, particularly in cities experiencing unplanned expansion. This paper examines the relationship between urban expansion and housing quality in Akure metropolis, focusing on the physical condition of dwellings, access to basic infrastructure, and the spatial patterns of residential deterioration in emerging peripheral settlements.
+                    model:"claude-3-haiku-20240307",
 
-1.0 Introduction
+                    max_tokens:1200,
 
-Akure, the capital of Ondo State, has experienced significant territorial growth over the past three decades, driven by rural-urban migration, natural population increase, and the expansion of commercial and administrative activities. What was once a compact, manageable urban settlement has grown into a sprawling metropolis, with development pushing outward into formerly agricultural land at the city's fringe.
+                    messages:[
+                        {
+                            role:"user",
+                            content:prompt
+                        }
+                    ]
 
-This pattern of outward growth is not unique to Akure. Across sub-Saharan Africa, cities are expanding faster than the capacity of urban authorities to deliver housing, roads, water, and sanitation to new residents (UN-Habitat, 2020). In Nigeria specifically, rapid urbanisation has consistently outpaced infrastructure provision, resulting in a widening gap between housing demand and the availability of decent, affordable shelter (Jiboye, 2011).
+                })
 
-The consequences of this mismatch are visible in the physical fabric of Akure's newer residential neighbourhoods — overcrowding, poor drainage, substandard building materials, and inadequate road access are common features of settlements that emerged beyond the reach of formal planning control.
+            }
+        );
 
-2.0 Literature Review
+        const data = await response.json();
 
-Housing quality is a multidimensional concept encompassing the structural integrity of buildings, access to water and sanitation, tenure security, and the quality of the surrounding residential environment (Amao, 2012). In Nigerian cities, research has consistently highlighted the role of rapid urbanisation in undermining residential standards, particularly in low-income areas.
+        console.log(data);
 
-References
+        if(data.error){
 
-Amao, F. L. (2012). Urbanisation, housing quality and environmental degeneration in Nigeria. Journal of Geography and Regional Planning, 5(16), 422–429.
+            output.innerHTML = "Error: " + data.error;
 
-Jiboye, A. D. (2011). Sustainable urbanisation: Issues and challenges for effective urban governance in Nigeria. Journal of Sustainable Development, 4(6), 211–220.
+            return;
+        }
 
-UN-Habitat. (2020). World cities report 2020: The value of sustainable urbanisation. United Nations Human Settlements Programme.`;
+        if(
+            data.content &&
+            data.content[0] &&
+            data.content[0].text
+        ){
 
-  const outputBody = document.getElementById('outputBody');
-  document.getElementById('outputTitle').textContent = 'Sample — Seminar paper (Urban Planning)';
-  outputBody.innerHTML = '';
-  currentOutput = sample;
+            output.innerHTML = data.content[0].text;
 
-  const badge = document.createElement('div');
-  badge.className = 'format-badge';
-  badge.textContent = 'Sample output \u00b7 Times New Roman 12pt \u00b7 APA 7th \u00b7 British English';
-  outputBody.appendChild(badge);
+        }else{
 
-  const note = document.createElement('div');
-  note.style.cssText = 'background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:12px;color:#8a6520;';
-  note.textContent = 'This is a real sample of what MeringoDocs generates. Your own document will be fully written based on your topic and notes.';
-  outputBody.appendChild(note);
+            output.innerHTML = "No response generated.";
 
-  const text = document.createElement('div');
-  text.textContent = sample;
-  outputBody.appendChild(text);
+        }
 
-  document.getElementById('copyBtn').style.display = 'inline-block';
-  document.getElementById('downloadBtn').style.display = 'inline-block';
-}
+    }catch(error){
 
-// ── RUNNERS ────────────────────────────────────────────────
-function runAcademic() {
-  const topic = document.getElementById('acTopic').value.trim();
-  if (!topic) { alert('Please enter a topic.'); return; }
-  const docType = document.getElementById('acDocType').value;
-  const inst = document.getElementById('acInst').value;
-  const field = document.getElementById('acField').value;
-  const words = document.getElementById('acWords').value;
-  const notes = document.getElementById('acNotes').value.trim();
-  streamOutput(`Write a ${docType} for a ${inst} student studying ${field}.\n\nTopic: "${topic}"\nTarget length: approximately ${words} words\n${notes ? 'Student notes:\n' + notes : 'Generate from the topic alone.'}\n\nWrite the complete document with all standard sections, APA 7th in-text citations, and a full reference list. Use Nigerian contexts where relevant.`, `${docType} \u2014 ${topic.slice(0,50)}`, 'acBtn', 'academic');
-}
+        console.log(error);
 
-function runAssignment() {
-  const question = document.getElementById('assQuestion').value.trim();
-  if (!question) { alert('Please paste your assignment question.'); return; }
-  const type = document.getElementById('assType').value;
-  const subject = document.getElementById('assSubject').value.trim();
-  const notes = document.getElementById('assNotes').value.trim();
-  streamOutput(`Answer this ${type} for a Nigerian student studying ${subject || 'their course'}.\n\nQuestion(s):\n${question}\n${notes ? '\nStudent notes:\n' + notes : ''}\n\nAnswer thoroughly and accurately. British English throughout. Reference where appropriate.`, `Assignment \u2014 ${subject || 'Answers'}`, 'assBtn', 'assignment');
-}
+        output.innerHTML = "Something went wrong.";
 
-function runEssay() {
-  const topic = document.getElementById('essTopic').value.trim();
-  if (!topic) { alert('Please enter a topic.'); return; }
-  const type = document.getElementById('essType').value;
-  const words = document.getElementById('essWords').value;
-  const notes = document.getElementById('essNotes').value.trim();
-  streamOutput(`Write a ${type} essay on: "${topic}"\nTarget length: approximately ${words} words\n${notes ? 'Key points:\n' + notes : ''}\n\nWrite a complete essay. Strong introduction, well-developed body, compelling conclusion. British English.`, `${type} essay \u2014 ${topic.slice(0,50)}`, 'essBtn', 'essay');
-}
-
-function runEmail() {
-  const content = document.getElementById('emailContent').value.trim();
-  if (!content) { alert('Please describe what the email should say.'); return; }
-  const type = document.getElementById('emailType').value;
-  const to = document.getElementById('emailTo').value.trim();
-  streamOutput(`Write a ${type} email to ${to || 'the recipient'}.\n\nWhat it needs to say:\n${content}\n\nWrite the complete email with subject line, greeting, body, and sign-off. British English. Sound genuinely human.`, `${type} \u2014 to ${to || 'recipient'}`, 'emailBtn', 'email');
-}
-
-function runCreative() {
-  const topic = document.getElementById('creTopic').value.trim();
-  if (!topic) { alert('Please enter a topic or prompt.'); return; }
-  const type = document.getElementById('creType').value;
-  const tone = document.getElementById('creTone').value;
-  const notes = document.getElementById('creNotes').value.trim();
-  streamOutput(`Write a ${type} about: "${topic}"\nTone: ${tone}\n${notes ? 'Details:\n' + notes : ''}\n\nWrite with originality, emotional depth, and vivid expression.`, `${type} \u2014 ${topic.slice(0,50)}`, 'creBtn', 'creative');
-}
-
-function runYoutube() {
-  const topic = document.getElementById('ytTopic').value.trim();
-  if (!topic) { alert('Please enter a video topic.'); return; }
-  const type = document.getElementById('ytType').value;
-  const audience = document.getElementById('ytAudience').value.trim();
-  const notes = document.getElementById('ytNotes').value.trim();
-  streamOutput(`Write a ${type} for a YouTube video: "${topic}"\nAudience: ${audience || 'Nigerian young adults'}\n${notes ? 'Key points:\n' + notes : ''}\n\nWrite conversationally. Speak directly to the viewer. Engaging and natural.`, `YouTube script \u2014 ${topic.slice(0,50)}`, 'ytBtn', 'youtube');
-}
-
-function runSpeech() {
-  const topic = document.getElementById('spTopic').value.trim();
-  if (!topic) { alert('Please enter a topic or occasion.'); return; }
-  const type = document.getElementById('spType').value;
-  const duration = document.getElementById('spDuration').value;
-  const notes = document.getElementById('spNotes').value.trim();
-  streamOutput(`Write a ${type} for: "${topic}"\nDuration: ${duration}\n${notes ? 'Key details:\n' + notes : ''}\n\nWrite to be spoken aloud. Natural rhythm, emotional warmth, genuine conviction.`, `${type} \u2014 ${topic.slice(0,50)}`, 'spBtn', 'speech');
-}
-
-function runBusiness() {
-  const name = document.getElementById('bizName').value.trim();
-  const notes = document.getElementById('bizNotes').value.trim();
-  if (!name && !notes) { alert('Please enter your business details.'); return; }
-  const type = document.getElementById('bizType').value;
-  streamOutput(`Write a ${type} for: ${name || 'a Nigerian business'}\n\nDetails:\n${notes}\n\nWrite a complete, professional ${type} for the Nigerian business context.`, `${type} \u2014 ${name.slice(0,50) || 'Business'}`, 'bizBtn', 'business');
-}
-
-function runReport() {
-  const topic = document.getElementById('repTopic').value.trim();
-  if (!topic) { alert('Please enter a topic.'); return; }
-  const type = document.getElementById('repType').value;
-  const notes = document.getElementById('repNotes').value.trim();
-  streamOutput(`Write a ${type} on: "${topic}"\n${notes ? 'Observations and data:\n' + notes : ''}\n\nWell-structured, professional report. APA 7th where needed. British English.`, `${type} \u2014 ${topic.slice(0,50)}`, 'repBtn', 'report');
-}
-
-function runLetter() {
-  const content = document.getElementById('letContent').value.trim();
-  if (!content) { alert('Please describe the letter purpose.'); return; }
-  const type = document.getElementById('letType').value;
-  const to = document.getElementById('letTo').value.trim();
-  streamOutput(`Write a ${type} to ${to || 'the recipient'}.\n\nPurpose and details:\n${content}\n\nWrite the complete letter in correct formal format. British English. Genuinely human.`, `${type} \u2014 to ${to || 'recipient'}`, 'letBtn', 'letter');
-}
-
-function runSocial() {
-  const topic = document.getElementById('socTopic').value.trim();
-  if (!topic) { alert('Please enter what the post is about.'); return; }
-  const platform = document.getElementById('socPlatform').value;
-  const tone = document.getElementById('socTone').value;
-  const notes = document.getElementById('socNotes').value.trim();
-  streamOutput(`Write a ${platform} post about: "${topic}"\nTone: ${tone}\n${notes ? 'Details:\n' + notes : ''}\n\nEngaging, authentic content. Sound like a real person. Include hashtags where appropriate.`, `${platform} \u2014 ${topic.slice(0,50)}`, 'socBtn', 'social');
-}
-
-function runCV() {
-  const details = document.getElementById('cvDetails').value.trim();
-  if (!details) { alert('Please enter your details.'); return; }
-  const type = document.getElementById('cvType').value;
-  const name = document.getElementById('cvName').value.trim();
-  const job = document.getElementById('cvJob').value.trim();
-  streamOutput(`Write a ${type} for ${name || 'a Nigerian professional'}.\n\nDetails:\n${details}\n${job ? 'Applying for: ' + job : ''}\n\nStrong, genuine ${type}. Warm, confident, natural. British English.`, `${type} \u2014 ${name.slice(0,50) || 'CV'}`, 'cvBtn', 'cv');
-}
-
-function runReformat() {
-  const input = document.getElementById('reformatInput').value.trim();
-  if (!input) { alert('Please paste a document.'); return; }
-  const docType = document.getElementById('reformatDocType').value;
-  const level = document.getElementById('fixLevel').value;
-  const prompt = level === 'full'
-    ? `Completely rewrite and humanise this ${docType}. Strip out every AI-detectable pattern. Make it sound exactly like a thoughtful human wrote it. Preserve the original ideas. British English:\n\n${input}`
-    : `Reformat this ${docType}. Fix structure, grammar, and British English. Keep the original writing but make it cleaner and more professional:\n\n${input}`;
-  streamOutput(prompt, 'Reformatted document', 'reformatBtn', docType.includes('academic') ? 'academic' : 'essay');
-}
-
-function runReferences() {
-  const refInput = document.getElementById('refInput').value.trim();
-  const refTopic = document.getElementById('refTopic').value.trim();
-  if (!refInput && !refTopic) { alert('Please paste references or enter a topic.'); return; }
-  const count = document.getElementById('refCount').value;
-  const prompt = refInput
-    ? `Convert these raw references into a properly formatted APA 7th edition reference list. Sort alphabetically by surname. Hanging indent format. Fix incomplete details. British English:\n\n${refInput}`
-    : `Generate ${count} realistic APA 7th edition references for: "${refTopic}". Include journal articles, books, and chapters. Use Nigerian and African contexts where relevant. Hanging indent format.`;
-  streamOutput(prompt, 'APA 7th Edition References', 'refBtn', 'academic');
-}
-
-// ── COPY ───────────────────────────────────────────────────
-function copyOutput() {
-  navigator.clipboard.writeText(currentOutput).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '\u2713 Copied!';
-    setTimeout(() => btn.textContent = 'Copy text', 2500);
-  });
-}
-
-// ── HISTORY ────────────────────────────────────────────────
-function saveToHistory(title, type) {
-  const item = { title: title.slice(0,60), type, date: new Date().toLocaleDateString('en-GB'), content: currentOutput };
-  docHistory.unshift(item);
-  if (docHistory.length > 30) docHistory = docHistory.slice(0, 30);
-  localStorage.setItem('md_history', JSON.stringify(docHistory));
-  renderHistory();
-}
-
-function renderHistory() {
-  const list = document.getElementById('historyList');
-  if (!docHistory.length) { list.innerHTML = '<div class="history-empty">No documents yet.</div>'; return; }
-  list.innerHTML = docHistory.map((item, i) => `<div class="history-item" onclick="loadHistory(${i})"><div class="history-item-title">${item.title}</div><div class="history-item-meta">${item.type} \u00b7 ${item.date}</div></div>`).join('');
-}
-
-function loadHistory(i) {
-  const item = docHistory[i];
-  currentOutput = item.content;
-  document.getElementById('outputTitle').textContent = item.title;
-  const body = document.getElementById('outputBody');
-  body.innerHTML = '';
-  const t = document.createElement('div');
-  t.textContent = item.content;
-  body.appendChild(t);
-  document.getElementById('copyBtn').style.display = 'inline-block';
-  document.getElementById('downloadBtn').style.display = 'inline-block';
-}
-
-// ── ONBOARDING ─────────────────────────────────────────────
-function closeOnboarding() {
-  document.getElementById('onboardOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  localStorage.setItem('md_onboarded', '1');
-}
-
-// ── DOWNLOAD COMING SOON ───────────────────────────────────
-function showDownloadSoon() {
-  document.getElementById('downloadSoonOverlay').classList.add('open');
-}
-function closeDownloadSoon() {
-  document.getElementById('downloadSoonOverlay').classList.remove('open');
-}
-
-// ── SUCCESS ────────────────────────────────────────────────
-function showSuccess(ref) {
-  document.getElementById('successRef').textContent = 'Ref: ' + ref;
-  document.getElementById('successOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeSuccess() {
-  document.getElementById('successOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ── PAYWALL ────────────────────────────────────────────────
-function showPaywall() {
-  document.getElementById('paywallOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  showPlanSelect();
-}
-function closePaywall() {
-  document.getElementById('paywallOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function selectPlan(plan) {
-  selectedPlan = plan;
-  document.getElementById('planPro').classList.toggle('selected', plan === 'pro');
-  document.getElementById('planAnnual').classList.toggle('selected', plan === 'annual');
-}
-function showPayForm() {
-  document.getElementById('paywallStep1').style.display = 'none';
-  document.getElementById('paywallStep2').style.display = 'block';
-  document.getElementById('payFormPlanLabel').textContent = plans[selectedPlan].label;
-}
-function showPlanSelect() {
-  document.getElementById('paywallStep1').style.display = 'block';
-  document.getElementById('paywallStep2').style.display = 'none';
-}
-
-function processPayment() {
-  const name = document.getElementById('pwName').value.trim();
-  const email = document.getElementById('pwEmail').value.trim();
-  if (!name) { alert('Please enter your full name.'); return; }
-  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
-  const plan = plans[selectedPlan];
-  const btn = document.getElementById('pwPayBtn');
-  btn.textContent = 'Opening Paystack...';
-  btn.disabled = true;
-  const handler = PaystackPop.setup({
-    key: 'pk_live_4b52ba8f4673fb16e134f391489db5659b6ad8f5',
-    email, amount: plan.amount, currency: 'NGN',
-    ref: 'MD_' + Date.now(),
-    metadata: { name, plan: selectedPlan },
-    callback: function(res) {
-      closePaywall();
-      // Activate pro access
-      usedGenerations = 0;
-      setUsed(0);
-      localStorage.setItem('md_subscribed', '1');
-      updateUsageDisplay();
-      // Show proper success screen
-      showSuccess(res.reference);
-      btn.textContent = 'Pay with Paystack';
-      btn.disabled = false;
-    },
-    onClose: function() {
-      btn.textContent = 'Pay with Paystack';
-      btn.disabled = false;
     }
-  });
-  handler.openIframe();
-}
 
-const pwEl = document.getElementById('paywallOverlay');
-if (pwEl) pwEl.addEventListener('click', function(e) { if (e.target === this) closePaywall(); });
-const dlEl = document.getElementById('downloadSoonOverlay');
-if (dlEl) dlEl.addEventListener('click', function(e) { if (e.target === this) closeDownloadSoon(); });
-
-document.addEventListener('DOMContentLoaded', function() { init(); });
-
-// ── DONATION ────────────────────────────────────────────────
-function closeDonationBanner() {
-  document.getElementById('donationBanner').style.display = 'none';
-  sessionStorage.setItem('md_banner_closed', '1');
-}
-
-function showDonateModal() {
-  document.getElementById('donateOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeDonateModal() {
-  document.getElementById('donateOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function copyAccNumber() {
-  navigator.clipboard.writeText('0141437939').then(() => {
-    const btns = document.querySelectorAll('.dcopy');
-    btns.forEach(b => b.textContent = 'Copied!');
-    setTimeout(() => btns.forEach(b => b.textContent = 'Copy'), 2500);
-  });
-}
-
-const doEl = document.getElementById('donateOverlay');
-if (doEl) doEl.addEventListener('click', function(e) {
-  if (e.target === this) closeDonateModal();
-});
-
-// Hide banner if already dismissed this session
-if (sessionStorage.getItem('md_banner_closed') === '1') {
-  const b = document.getElementById('donationBanner');
-  if (b) b.style.display = 'none';
 }
 
 </script>
+
 </body>
 </html>
