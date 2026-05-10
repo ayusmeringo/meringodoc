@@ -730,6 +730,51 @@ textarea { resize: vertical; line-height: 1.6; }
   </div>
 </div>
 
+
+
+<!-- DONATE MODAL -->
+<div class="donate-overlay" id="donateOverlay">
+  <div class="donate-box">
+    <button class="donate-x" onclick="closeDonateModal()">✕</button>
+    <div class="donate-emoji">🙏</div>
+    <h2>Support MeringoDocs</h2>
+    <p class="donate-desc">I am a Nigerian lecturer who built this tool from scratch to help students write better. Your donation — any amount — goes directly towards funding the AI engine, adding Word downloads, PowerPoint generation, and WhatsApp ordering. Every contributor becomes part of this story.</p>
+
+    <div class="donate-account">
+      <div class="dar">
+        <span class="dal">Bank</span>
+        <span class="dav">Guaranty Trust Bank (GTB)</span>
+      </div>
+      <div class="dar">
+        <span class="dal">Account name</span>
+        <span class="dav">Oyinlana Ayodeji</span>
+      </div>
+      <div class="dar">
+        <span class="dal">Account number</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="dav number">0141437939</span>
+          <button class="dcopy" onclick="copyAccNumber()">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:12px;color:#888;margin-bottom:0.75rem;">Suggested amounts — or send any amount you can:</p>
+    <div class="donate-amounts">
+      <button class="damt" onclick="copyAccNumber()">₦500</button>
+      <button class="damt" onclick="copyAccNumber()">₦1,000</button>
+      <button class="damt" onclick="copyAccNumber()">₦2,000</button>
+      <button class="damt" onclick="copyAccNumber()">₦5,000</button>
+      <button class="damt" onclick="copyAccNumber()">₦10,000</button>
+    </div>
+
+    <a href="https://wa.me/2348134667120?text=Hi%20Meringo%2C%20I%20just%20made%20a%20donation%20to%20support%20MeringoDocs%20%F0%9F%99%8F" target="_blank" class="donate-wa-link">
+      💬 Tap here to notify me after donating
+    </a>
+    <div class="donate-thank">Thank you from the bottom of my heart. Every kobo counts. — Meringo</div>
+  </div>
+</div>
+
+
 <script>
 // ── STATE ──────────────────────────────────────────────────
 const MAX_FREE = 5;
@@ -1327,48 +1372,5 @@ if (sessionStorage.getItem('md_banner_closed') === '1') {
 }
 
 </script>
-
-<!-- DONATE MODAL -->
-<div class="donate-overlay" id="donateOverlay">
-  <div class="donate-box">
-    <button class="donate-x" onclick="closeDonateModal()">✕</button>
-    <div class="donate-emoji">🙏</div>
-    <h2>Support MeringoDocs</h2>
-    <p class="donate-desc">I am a Nigerian lecturer who built this tool from scratch to help students write better. Your donation — any amount — goes directly towards funding the AI engine, adding Word downloads, PowerPoint generation, and WhatsApp ordering. Every contributor becomes part of this story.</p>
-
-    <div class="donate-account">
-      <div class="dar">
-        <span class="dal">Bank</span>
-        <span class="dav">Guaranty Trust Bank (GTB)</span>
-      </div>
-      <div class="dar">
-        <span class="dal">Account name</span>
-        <span class="dav">Oyinlana Ayodeji</span>
-      </div>
-      <div class="dar">
-        <span class="dal">Account number</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="dav number">0141437939</span>
-          <button class="dcopy" onclick="copyAccNumber()">Copy</button>
-        </div>
-      </div>
-    </div>
-
-    <p style="font-size:12px;color:#888;margin-bottom:0.75rem;">Suggested amounts — or send any amount you can:</p>
-    <div class="donate-amounts">
-      <button class="damt" onclick="copyAccNumber()">₦500</button>
-      <button class="damt" onclick="copyAccNumber()">₦1,000</button>
-      <button class="damt" onclick="copyAccNumber()">₦2,000</button>
-      <button class="damt" onclick="copyAccNumber()">₦5,000</button>
-      <button class="damt" onclick="copyAccNumber()">₦10,000</button>
-    </div>
-
-    <a href="https://wa.me/2348134667120?text=Hi%20Meringo%2C%20I%20just%20made%20a%20donation%20to%20support%20MeringoDocs%20%F0%9F%99%8F" target="_blank" class="donate-wa-link">
-      💬 Tap here to notify me after donating
-    </a>
-    <div class="donate-thank">Thank you from the bottom of my heart. Every kobo counts. — Meringo</div>
-  </div>
-</div>
-
 </body>
 </html>
